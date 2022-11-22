@@ -1,8 +1,8 @@
 {
-  "name": "@contentstack/cli-migration",
+  "name": "testsha-migration",
   "version": "1.0.2",
   "author": "@contentstack",
-  "bugs": "https://github.com/contentstack/cli/issues",
+  ,
   "dependencies": {
     "@contentstack/cli-command": "^1.0.2",
     "@contentstack/management": "^1.6.0",

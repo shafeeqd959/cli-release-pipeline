@@ -1,5 +1,5 @@
 {
-  "name": "@contentstack/cli-dev-dependencies",
+  "name": "testsha-dev-dependencies",
   "version": "1.0.0",
   "description": "Customized dev dependencies for ContentStack projects",
   "main": "lib/index.js",

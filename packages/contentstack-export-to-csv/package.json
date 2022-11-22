@@ -1,9 +1,9 @@
 {
-  "name": "@contentstack/cli-cm-export-to-csv",
+  "name": "testsha-cm-export-to-csv",
   "description": "Export entities to csv",
   "version": "1.0.2",
   "author": "Abhinav Gupta @abhinav-from-contentstack",
-  "bugs": "https://github.com/contentstack/cli/issues",
+  ,
   "dependencies": {
     "@contentstack/cli-command": "^1.0.2",
     "@contentstack/cli-utilities": "^1.0.3",
@@ -63,5 +63,8 @@
     ],
     "repositoryPrefix": "<%- repo %>/blob/main/packages/contentstack-export-to-csv/<%- commandPath %>"
   },
-  "repository": "https://github.com/contentstack/cli"
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
 }

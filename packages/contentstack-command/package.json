@@ -1,5 +1,5 @@
 {
-  "name": "@contentstack/cli-command",
+  "name": "testsha-command",
   "description": "Contentstack CLI plugin for configuration",
   "version": "1.0.2",
   "author": "Contentstack",
