@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "importHelpers": true,
+    "module": "commonjs",
+    "outDir": "lib",
+    "rootDir": "src",
+    "strict": true,
+    "target": "es2017",
+    "allowJs": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*",
+    "src/typings/@contentstack/cli-utilities.ts",
+  ]
+}
