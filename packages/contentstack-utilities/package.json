@@ -1,7 +1,7 @@
 {
-  "name": "@contentstack/cli-utilities",
+  "name": "testsha-utilities",
   "version": "1.0.3",
-  "description": "Utilities for contentstack projects",
+  "description": "Utilities for projects",
   "main": "lib/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
@@ -19,11 +19,8 @@
     "type": "git",
     "url": ""
   },
-  "keywords": [
-    "contentstack",
-    "utilities"
-  ],
-  "author": "contentstack",
+  "keywords": [],
+  "author": "shafeeq",
   "license": "MIT",
   "dependencies": {
     "@contentstack/management": "^1.6.0",
