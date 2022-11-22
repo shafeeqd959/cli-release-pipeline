@@ -6,5 +6,5 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - id: set_var
+      - shell: bash
         run: ls
