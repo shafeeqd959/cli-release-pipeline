@@ -1,5 +1,5 @@
 name: read json
-on: workflow_dispatch
+on: push
 
 jobs:
   testJob:
@@ -7,4 +7,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - shell: bash
-        run: ls $HOME
+        run: ls $HOME/runners
