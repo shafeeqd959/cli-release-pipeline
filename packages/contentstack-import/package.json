@@ -1,9 +1,7 @@
 {
-  "name": "@contentstack/cli-cm-import",
+  "name": "testsha-cm-import",
   "description": "Contentstack CLI plugin to import content into stack",
   "version": "1.2.1",
-  "author": "Contentstack",
-  "bugs": "https://github.com/contentstack/cli/issues",
   "dependencies": {
     "@contentstack/cli-command": "^1.0.2",
     "@contentstack/management": "^1.6.0",
@@ -68,5 +66,8 @@
     ],
     "repositoryPrefix": "<%- repo %>/blob/main/packages/contentstack-import/<%- commandPath %>"
   },
-  "repository": "https://github.com/contentstack/cli"
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
 }

@@ -1,9 +1,7 @@
 {
-  "name": "@contentstack/cli-auth",
+  "name": "testsha-auth",
   "description": "Contentstack CLI plugin for authentication activities",
   "version": "1.0.3",
-  "author": "Contentstack",
-  "bugs": "https://github.com/contentstack/cli/issues",
   "scripts": {
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./lib && rm -rf tsconfig.build.tsbuildinfo",

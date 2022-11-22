@@ -1,9 +1,7 @@
 {
-  "name": "@contentstack/cli-cm-export",
+  "name": "testsha-cm-export",
   "description": "Contentstack CLI plugin to export content from stack",
   "version": "1.2.1",
-  "author": "Contentstack",
-  "bugs": "https://github.com/contentstack/cli/issues",
   "dependencies": {
     "@contentstack/cli-command": "^1.0.2",
     "@contentstack/cli-utilities": "^1.0.3",
@@ -79,5 +77,8 @@
     }
   },
   "main": "./src/commands/cm/stacks/export.js",
-  "repository": "https://github.com/contentstack/cli"
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
 }
