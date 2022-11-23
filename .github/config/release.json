@@ -2,7 +2,7 @@
     "releaseAll": false,
     "plugins": {
         "utilities": true,
-        "export": false,
-        "import": true
+        "import": true,
+        "export": false
     }
 }
