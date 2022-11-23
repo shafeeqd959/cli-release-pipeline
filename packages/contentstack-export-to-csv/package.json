@@ -3,7 +3,6 @@
   "description": "Export entities to csv",
   "version": "1.0.2",
   "author": "Abhinav Gupta @abhinav-from-contentstack",
-  ,
   "dependencies": {
     "@contentstack/cli-command": "^1.0.2",
     "@contentstack/cli-utilities": "^1.0.3",

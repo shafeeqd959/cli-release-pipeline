@@ -9,7 +9,7 @@ const ENC_CONFIG_NAME = process.env.ENC_CONFIG_NAME || 'contentstack_cli_obfusca
 const OLD_CONFIG_BACKUP_FLAG = 'isOldConfigBackup'
 
 const xdgBasedir = require('xdg-basedir');
-const path = require('path');
+const path = require('path';
 const os = require('os');
 const uniqueString = require('unique-string');
 const oldConfigDirectory = xdgBasedir.config || path.join(os.tmpdir(), uniqueString());
