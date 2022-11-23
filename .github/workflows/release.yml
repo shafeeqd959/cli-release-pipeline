@@ -18,11 +18,13 @@ jobs:
         with:
           path: .github/config/release.json
           properties: "modifiedPlugins"
-      - run: echo ${{ steps.release_config.outputs.modifiedPlugins.utilities }}
+      - run: echo ${{ toJSON(steps.release_config.outputs.modifiedPlugins.utilities) }}
       - name: installing utilities
-        run: npm install
+        if: steps.release_config.outputs.modifiedPlugins.utilities
         working-directory: ./packages/contentstack-utilities
+        run: npm install
       - uses: JS-DevTools/npm-publish@v1
+        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.utilities == true }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
