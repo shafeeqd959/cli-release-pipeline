@@ -19,7 +19,7 @@ jobs:
           path: .github/config/release.json
           properties: "modifiedPlugins"
         env:
-          modifiedPlugins: ${{ fromJSON(steps.release_config.outputs.modifiedPlugins) }}
+          utitliesRelease: ${{ fromJSON(steps.release_config.outputs.modifiedPlugins.utilities) }}
       - run: echo ${{ toJSON(env.modifiedPlugins) }}
       - name: installing utilities
         if: true
