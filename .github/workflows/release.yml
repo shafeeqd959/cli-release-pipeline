@@ -31,7 +31,7 @@ jobs:
           package: ./packages/contentstack-utilities/package.json
       - name: installing export
         id: export-installation
-        if: ${{env.release_plugins_export}}
+        if: ${{env.release_plugins_export == true}}
         working-directory: ./packages/contentstack-export
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
@@ -40,7 +40,7 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-export/package.json
       - name: installing import
-        if: ${{env.release_plugins_import}}
+        if: ${{env.release_plugins_import == true}}
         working-directory: ./packages/contentstack-import
         run: npm install
       - uses: JS-DevTools/npm-publish@v1

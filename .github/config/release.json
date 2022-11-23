@@ -1,6 +1,6 @@
 {
     "plugins": {
-        "utilities": false,
+        "utilities": true,
         "import": false,
         "export": true
     }
