@@ -24,6 +24,7 @@ jobs:
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
+        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.utilities == true }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
@@ -32,6 +33,7 @@ jobs:
         working-directory: ./packages/contentstack-export
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
+        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.export == true  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-export/package.json
@@ -40,6 +42,7 @@ jobs:
         working-directory: ./packages/contentstack-import
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
+        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.import == true  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-import/package.json
