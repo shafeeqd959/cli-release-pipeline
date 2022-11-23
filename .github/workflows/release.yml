@@ -18,13 +18,13 @@ jobs:
         with:
           filename: .github/config/release.json
           prefix: release
-      - run: echo ${{json_plugins_utilities}}
+      - run: echo ${{release_plugins_utilities}}
       - name: installing utilities
-        if: ${{json_plugins_utilities}}
+        if: ${{release_plugins_utilities}}
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
-        if: ${{ success() &&  json_plugins_utilities }}
+        if: ${{ success() &&  release_plugins_utilities }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
