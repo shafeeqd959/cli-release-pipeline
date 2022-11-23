@@ -1,6 +1,6 @@
 {
     "modifiedPlugins": {
-        "utilities": true,
+        "utilities": false,
         "import": true,
         "export": true
     }
