@@ -12,39 +12,33 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "16.x"
-      - run: npm install
-
-      - name: get-npm-version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-      - name: install npm packall
-        run: npm install npm-pack-all
-
-      - run: node node_modules/.bin/npm-pack-all
-      - uses: Klemensas/action-autotag@stable
-        id: update_tag
+      - name: Read Configuration
+        id: release_config
+        uses: ashley-taylor/read-json-property-action@v1.0
         with:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          tag_prefix: "v"
-      - name: Create Release
-        if: steps.update_tag.outputs.tagname
-        uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          path: .github/config/release.json
+          property: modifiedPlugins
+      - name: installing utilities
+        if: ${{ steps.release_config.outputs.value.utilities }}
+        working-directory: ./packages/contentstack-utilities
+        run: npm install
+      - uses: JS-DevTools/npm-publish@v1
         with:
-          tag_name: ${{ steps.update_tag.outputs.tagname }}
-          release_name: Release ${{ steps.update_tag.outputs.tagname }}
-          draft: false # Default value, but nice to set explicitly
-          prerelease: false # Default value, but nice to set explicitly
-      - name: Upload Release Asset
-        if: steps.update_tag.outputs.tagname
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/contentstack-utilities/package.json
+      - name: installing export
+        if: ${{ success() && steps.release_config.outputs.value.export === true  }}
+        working-directory: ./packages/contentstack-export
+        run: npm install
+      - uses: JS-DevTools/npm-publish@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./contentstack-cli-cm-regex-validate-${{ steps.package-version.outputs.current-version }}.tgz
-          asset_name: contentstack-cli-cm-regex-validate-${{ steps.package-version.outputs.current-version }}.tgz
-          asset_content_type: application/tgz
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/contentstack-export/package.json
+      - name: installing import
+        if: ${{ success() && steps.release_config.outputs.value.import === true  }}
+        working-directory: ./packages/contentstack-import
+        run: npm install
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          package: ./packages/contentstack-import/package.json

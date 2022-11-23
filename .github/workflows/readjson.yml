@@ -1,5 +1,5 @@
 name: read json
-on: push
+on: workflow_dispatch
 
 jobs:
   testJob:
