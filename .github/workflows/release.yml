@@ -14,12 +14,13 @@ jobs:
           node-version: "16.x"
       - name: Read Configuration
         id: release_config
-        uses: ashley-taylor/read-json-property-action@v1.0
+        uses: muchaszewski/read-json-action@release
         with:
           path: .github/config/release.json
-          property: modifiedPlugins
+          properties: "modifiedPlugins"
+      - run: echo ${{ toJSON(steps.release_config.outputs.modifiedPlugins) }}
       - name: installing utilities
-        if: ${{ steps.release_config.outputs.value.utilities == true }}
+        if: ${{ steps.release_config.outputs.modifiedPlugins.utilities == true }}
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
@@ -27,7 +28,7 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
       - name: installing export
-        if: ${{ success() && steps.release_config.outputs.value.export == true  }}
+        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.export == true  }}
         working-directory: ./packages/contentstack-export
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
@@ -35,7 +36,7 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-export/package.json
       - name: installing import
-        if: ${{ success() && steps.release_config.outputs.value.import == true  }}
+        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.import == true  }}
         working-directory: ./packages/contentstack-import
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
