@@ -20,7 +20,7 @@ jobs:
           properties: "modifiedPlugins"
       - run: echo ${{ steps.release_config.outputs.modifiedPlugins. }}
       - name: installing utilities
-        if: steps.release_config.outputs.modifiedPlugins.utilities
+        if: true
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
