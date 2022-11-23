@@ -18,7 +18,7 @@ jobs:
         with:
           filename: .github/config/release.json
           prefix: release
-      - run: echo release config - ${{toJSON(env.release_plugins)}}
+      - run: echo release config - ${{env.release_plugins_utilities}}
       - name: installing utilities
         id: utilities-installation
         if: ${{env.release_plugins_utilities}}
