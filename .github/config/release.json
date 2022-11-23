@@ -1,4 +1,5 @@
 {
+    "releaseAll": false,
     "plugins": {
         "utilities": true,
         "export": false,
