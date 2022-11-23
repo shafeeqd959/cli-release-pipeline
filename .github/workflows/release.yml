@@ -20,7 +20,7 @@ jobs:
           properties: "modifiedPlugins"
         env:
           modifiedPlugins: ${{ steps.release_config.outputs.modifiedPlugins }}
-      - run: echo ${{ env.modifiedPlugins }}
+      - run: echo ${{ toJSON(env.modifiedPlugins) }}
       - name: installing utilities
         if: true
         working-directory: ./packages/contentstack-utilities
