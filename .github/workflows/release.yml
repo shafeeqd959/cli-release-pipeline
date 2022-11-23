@@ -18,31 +18,33 @@ jobs:
         with:
           filename: .github/config/release.json
           prefix: release
-      - run: echo ${{env.release_plugins_utilities}}
+      - run: echo release config - ${{toJSON(env.release_plugins)}}
       - name: installing utilities
+        id: utilities-installation
         if: ${{env.release_plugins_utilities}}
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
-        if: ${{ success() &&  env.release_plugins_utilities }}
+        if: ${{ steps.utilities-installation.conclusion == 'success'  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
       - name: installing export
-        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.export == true  }}
+        id: export-installation
+        if: ${{env.release_plugins_export}}
         working-directory: ./packages/contentstack-export
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
-        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.export == true  }}
+        if: ${{ steps.export-installation.conclusion == 'success'  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-export/package.json
       - name: installing import
-        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.import == true  }}
+        if: ${{env.release_plugins_import}}
         working-directory: ./packages/contentstack-import
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
-        if: ${{ success() && steps.release_config.outputs.modifiedPlugins.import == true  }}
+        if: ${{ steps.import-installation.conclusion == 'success'  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-import/package.json
