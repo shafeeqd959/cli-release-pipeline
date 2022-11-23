@@ -1,4 +1,4 @@
-name: Releases
+name: Release CLI Plugins
 
 on:
   push:
@@ -12,39 +12,41 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "16.x"
-      - name: Read Configuration
+      - name: Reading Configuration
         id: release_config
         uses: rgarcia-phi/json-to-variables@v1.1.0
         with:
           filename: .github/config/release.json
           prefix: release
-      - run: echo release config - ${{env.release_plugins_utilities}}
-      - name: installing utilities
+      - name: Installing dependencies of utilities
         id: utilities-installation
         if: ${{env.release_plugins_utilities == 'true'}}
         working-directory: ./packages/contentstack-utilities
         run: npm install
-      - uses: JS-DevTools/npm-publish@v1
+      - name: Publishing utilities
+        uses: JS-DevTools/npm-publish@v1
         if: ${{ steps.utilities-installation.conclusion == 'success'  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
-      - name: installing export
+      - name: Installing dependencies of export
         id: export-installation
         if: ${{env.release_plugins_export == 'true'}}
         working-directory: ./packages/contentstack-export
         run: npm install
-      - uses: JS-DevTools/npm-publish@v1
+      - name: Publishing export
+        uses: JS-DevTools/npm-publish@v1
         if: ${{ steps.export-installation.conclusion == 'success'  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-export/package.json
-      - name: installing import
+      - name: Installing dependencies of import
         id: import-installation
         if: ${{env.release_plugins_import == 'true'}}
         working-directory: ./packages/contentstack-import
         run: npm install
-      - uses: JS-DevTools/npm-publish@v1
+      - name: Publishing import
+        uses: JS-DevTools/npm-publish@v1
         if: ${{ steps.import-installation.conclusion == 'success'  }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
