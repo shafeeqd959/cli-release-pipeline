@@ -21,7 +21,7 @@ jobs:
       - run: echo release config - ${{env.release_plugins_utilities}}
       - name: installing utilities
         id: utilities-installation
-        if: ${{env.release_plugins_utilities}}
+        if: ${{env.release_plugins_utilities == true}}
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
