@@ -18,7 +18,9 @@ jobs:
         with:
           path: .github/config/release.json
           properties: "modifiedPlugins"
-      - run: echo ${{ steps.release_config.outputs.modifiedPlugins.utilities }}
+        env:
+          modifiedPlugins: ${{ steps.release_config.outputs.modifiedPlugins.utilities }}
+      - run: echo ${{ env.modifiedPlugins }}
       - name: installing utilities
         if: true
         working-directory: ./packages/contentstack-utilities
