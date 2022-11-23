@@ -14,13 +14,10 @@ jobs:
           node-version: "16.x"
       - name: Read Configuration
         id: release_config
-        uses: muchaszewski/read-json-action@1.0.0
+        uses: rgarcia-phi/json-to-variables@v1.1.0
         with:
-          path: .github/config/release.json
-          properties: "modifiedPlugins"
-        env:
-          utitliesRelease: ${{ fromJSON(steps.release_config.outputs.modifiedPlugins.utilities) }}
-      - run: echo ${{ toJSON(env.modifiedPlugins) }}
+          filename: .github/config/release.json
+      - run: echo ${{ env.modifiedPlugins_utilities }}
       - name: installing utilities
         if: true
         working-directory: ./packages/contentstack-utilities
