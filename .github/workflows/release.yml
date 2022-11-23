@@ -17,13 +17,14 @@ jobs:
         uses: rgarcia-phi/json-to-variables@v1.1.0
         with:
           filename: .github/config/release.json
-      - run: echo ${{ env.modifiedPlugins_utilities }}
+          prefix: release
+      - run: echo ${{ json_modifiedPlugins_utilities }}
       - name: installing utilities
         if: true
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
-        if: ${{ success() &&  true }}
+        if: ${{ success() &&  json_modifiedPlugins_utilities }}
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
