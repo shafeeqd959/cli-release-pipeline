@@ -19,7 +19,7 @@ jobs:
           path: .github/config/release.json
           property: modifiedPlugins
       - name: installing utilities
-        if: ${{ steps.release_config.outputs.value.utilities }}
+        if: ${{ steps.release_config.outputs.value.utilities == true }}
         working-directory: ./packages/contentstack-utilities
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
@@ -27,7 +27,7 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-utilities/package.json
       - name: installing export
-        if: ${{ success() && steps.release_config.outputs.value.export === true  }}
+        if: ${{ success() && steps.release_config.outputs.value.export == true  }}
         working-directory: ./packages/contentstack-export
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
@@ -35,7 +35,7 @@ jobs:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack-export/package.json
       - name: installing import
-        if: ${{ success() && steps.release_config.outputs.value.import === true  }}
+        if: ${{ success() && steps.release_config.outputs.value.import == true  }}
         working-directory: ./packages/contentstack-import
         run: npm install
       - uses: JS-DevTools/npm-publish@v1
