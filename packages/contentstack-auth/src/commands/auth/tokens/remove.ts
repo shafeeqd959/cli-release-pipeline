@@ -1,4 +1,4 @@
-import { Command, flags } from '@contentstack/cli-command';
+import { Command, flags } from 'testsha-command';
 import { logger, cliux, configHandler } from '@contentstack/cli-utilities';
 
 export default class TokensRemoveCommand extends Command {

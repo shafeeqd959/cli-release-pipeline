@@ -1,25 +1,35 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-warning-comments */
 /* eslint-disable camelcase */
-'use strict';
+"use strict";
 
 // Dependencies
-const Listr = require('listr');
-const { resolve, extname } = require('path');
-const { Command, flags } = require('@contentstack/cli-command');
-const { waterfall } = require('async');
-const { Parser } = require('../../../modules');
-const { ActionList } = require('../../../actions');
-const fs = require('fs');
-const chalk = require('chalk');
-const { configHandler } = require('@contentstack/cli-utilities');
-const { printFlagDeprecation } = require('@contentstack/cli-utilities');
+const Listr = require("listr");
+const { resolve, extname } = require("path");
+const { Command, flags } = require("testsha-command");
+const { waterfall } = require("async");
+const { Parser } = require("../../../modules");
+const { ActionList } = require("../../../actions");
+const fs = require("fs");
+const chalk = require("chalk");
+const { configHandler } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("@contentstack/cli-utilities");
 
-const { ApiError, SchemaValidator, MigrationError, FieldValidator } = require('../../../validators');
+const {
+  ApiError,
+  SchemaValidator,
+  MigrationError,
+  FieldValidator,
+} = require("../../../validators");
 
 // Utils
-const { map: _map, constants, safePromise, errorHelper } = require('../../../utils');
-const { success } = require('../../../utils/logger');
+const {
+  map: _map,
+  constants,
+  safePromise,
+  errorHelper,
+} = require("../../../utils");
+const { success } = require("../../../utils/logger");
 
 // Properties
 const { get, set, getMapInstance, resetMapInstance } = _map;
@@ -36,50 +46,57 @@ const {
 
 class MigrationCommand extends Command {
   static examples = [
-    '$ csdx cm:migration --file-path <migration/script/file/path> -k <api-key>',
-    '$ csdx cm:migration --file-path <migration/script/file/path> -k <api-key> --branch <target branch name>',
-    '$ csdx cm:migration --config <key1>:<value1> <key2>:<value2> ... --file-path <migration/script/file/path>',
-    '$ csdx cm:migration --config-file <path/to/json/config/file> --file-path <migration/script/file/path>',
-    '$ csdx cm:migration --multiple --file-path <migration/scripts/dir/path> ',
-    '$ csdx cm:migration --alias --file-path <migration/script/file/path> -k <api-key>',
+    "$ csdx cm:migration --file-path <migration/script/file/path> -k <api-key>",
+    "$ csdx cm:migration --file-path <migration/script/file/path> -k <api-key> --branch <target branch name>",
+    "$ csdx cm:migration --config <key1>:<value1> <key2>:<value2> ... --file-path <migration/script/file/path>",
+    "$ csdx cm:migration --config-file <path/to/json/config/file> --file-path <migration/script/file/path>",
+    "$ csdx cm:migration --multiple --file-path <migration/scripts/dir/path> ",
+    "$ csdx cm:migration --alias --file-path <migration/script/file/path> -k <api-key>",
   ];
 
   async run() {
     // TODO: filePath validation required.
     const migrationCommandFlags = this.parse(MigrationCommand).flags;
     const { branch } = migrationCommandFlags;
-    const filePath = migrationCommandFlags['file-path'] || migrationCommandFlags.filePath;
+    const filePath =
+      migrationCommandFlags["file-path"] || migrationCommandFlags.filePath;
     const multi = migrationCommandFlags.multiple || migrationCommandFlags.multi;
-    const authtoken = configHandler.get('authtoken');
-    const apiKey = migrationCommandFlags['api-key'] || migrationCommandFlags['stack-api-key'];
-    const alias = migrationCommandFlags['alias'] || migrationCommandFlags['management-token-alias'];
-    const config = migrationCommandFlags['config'];
+    const authtoken = configHandler.get("authtoken");
+    const apiKey =
+      migrationCommandFlags["api-key"] ||
+      migrationCommandFlags["stack-api-key"];
+    const alias =
+      migrationCommandFlags["alias"] ||
+      migrationCommandFlags["management-token-alias"];
+    const config = migrationCommandFlags["config"];
 
     if (!authtoken && !alias) {
       this.log(
-        "AuthToken is not present in local drive, Hence use 'csdx auth:login' command for login or provide management token alias",
+        "AuthToken is not present in local drive, Hence use 'csdx auth:login' command for login or provide management token alias"
       );
       this.exit();
     }
 
     if (!filePath) {
-      this.log('Please provide the migration script file path, use --file-path flag');
+      this.log(
+        "Please provide the migration script file path, use --file-path flag"
+      );
       this.exit();
     }
 
     // Reset map instance
     const mapInstance = getMapInstance();
     resetMapInstance(mapInstance);
-    if (migrationCommandFlags['config-file']) {
-      set('config-path', mapInstance, migrationCommandFlags['config-file']);
+    if (migrationCommandFlags["config-file"]) {
+      set("config-path", mapInstance, migrationCommandFlags["config-file"]);
     }
 
     if (Array.isArray(config) && config.length > 0) {
       let configObj = config.reduce((a, v) => {
-        let objArr = v.split(':');
+        let objArr = v.split(":");
         return { ...a, [objArr[0]]: objArr[1] };
       }, {});
-      set('config', mapInstance, configObj);
+      set("config", mapInstance, configObj);
     }
 
     let stackSDKInstance;
@@ -172,7 +189,7 @@ class MigrationCommand extends Command {
       const files = fs.readdirSync(resolvedMigrationPath);
       for (const element of files) {
         const file = element;
-        if (extname(file) === '.js') {
+        if (extname(file) === ".js") {
           success(chalk`{white Executing file:} {grey {bold ${file}}}`);
           // eslint-disable-next-line no-await-in-loop
           await this.execSingleFile(resolve(filePath, file), mapInstance);
@@ -200,15 +217,15 @@ class MigrationCommand extends Command {
         result && results.push(result);
         task.title = successTitle;
         return result;
-      }
-    }
+      };
+    };
 
     for (const element of requests) {
       let reqObj = element;
       const { title } = reqObj;
       const taskObj = {
         title: title,
-        task: taskFn(reqObj)
+        task: taskFn(reqObj),
       };
       _tasks.push(taskObj);
     }
@@ -230,76 +247,85 @@ class MigrationCommand extends Command {
   }
 }
 
-MigrationCommand.description = 'Contentstack migration script.';
+MigrationCommand.description = "Contentstack migration script.";
 
 MigrationCommand.flags = {
-  'api-key': flags.string({
-    char: 'k',
-    description: 'With this flag add the API key of your stack.',
-    dependsOn: ['authtoken'],
-    exclusive: ['alias'],
-    parse: printFlagDeprecation(['--api-key'], ['-k', '--stack-api-key']),
+  "api-key": flags.string({
+    char: "k",
+    description: "With this flag add the API key of your stack.",
+    dependsOn: ["authtoken"],
+    exclusive: ["alias"],
+    parse: printFlagDeprecation(["--api-key"], ["-k", "--stack-api-key"]),
     hidden: true,
   }),
-  'stack-api-key': flags.string({
-    char: 'k',
-    description: 'With this flag add the API key of your stack.',
-    dependsOn: ['authtoken'],
-    exclusive: ['alias'],
+  "stack-api-key": flags.string({
+    char: "k",
+    description: "With this flag add the API key of your stack.",
+    dependsOn: ["authtoken"],
+    exclusive: ["alias"],
   }),
   authtoken: flags.boolean({
-    char: 'A',
+    char: "A",
     description:
-      'Use this flag to use the auth token of the current session. After logging in CLI, an auth token is generated for each new session.',
-    dependsOn: ['api-key'],
-    exclusive: ['alias'],
-    parse: printFlagDeprecation(['-A', '--authtoken']),
+      "Use this flag to use the auth token of the current session. After logging in CLI, an auth token is generated for each new session.",
+    dependsOn: ["api-key"],
+    exclusive: ["alias"],
+    parse: printFlagDeprecation(["-A", "--authtoken"]),
     hidden: true,
   }),
   alias: flags.string({
-    char: 'a',
-    description: 'Use this flag to add the management token alias.',
-    exclusive: ['authtoken'],
+    char: "a",
+    description: "Use this flag to add the management token alias.",
+    exclusive: ["authtoken"],
   }),
-  'management-token-alias': flags.string({
-    description: 'alias of the management token',
-    exclusive: ['authtoken'],
+  "management-token-alias": flags.string({
+    description: "alias of the management token",
+    exclusive: ["authtoken"],
     hidden: true,
-    parse: printFlagDeprecation(['--management-token-alias'], ['-a', '--alias']),
+    parse: printFlagDeprecation(
+      ["--management-token-alias"],
+      ["-a", "--alias"]
+    ),
   }),
   filePath: flags.string({
-    char: 'n',
-    description: 'Use this flag to provide the path of the file of the migration script provided by the user.',
-    parse: printFlagDeprecation(['-n', '--filePath'], ['--file-path']),
+    char: "n",
+    description:
+      "Use this flag to provide the path of the file of the migration script provided by the user.",
+    parse: printFlagDeprecation(["-n", "--filePath"], ["--file-path"]),
     hidden: true,
   }),
-  'file-path': flags.string({
-    description: 'Use this flag to provide the path of the file of the migration script provided by the user.',
+  "file-path": flags.string({
+    description:
+      "Use this flag to provide the path of the file of the migration script provided by the user.",
   }),
   branch: flags.string({
-    char: 'B',
-    description: 'Use this flag to add the branch name where you want to perform the migration.',
-    parse: printFlagDeprecation(['-B'], ['--branch']),
+    char: "B",
+    description:
+      "Use this flag to add the branch name where you want to perform the migration.",
+    parse: printFlagDeprecation(["-B"], ["--branch"]),
   }),
-  'config-file': flags.string({
-    description: '[optional] Path of the JSON configuration file',
+  "config-file": flags.string({
+    description: "[optional] Path of the JSON configuration file",
   }),
   config: flags.string({
-    description: '[optional] inline configuration, <key1>:<value1>',
+    description: "[optional] inline configuration, <key1>:<value1>",
     multiple: true,
   }),
   multi: flags.boolean({
-    description: 'This flag helps you to migrate multiple content files in a single instance.',
-    parse: printFlagDeprecation(['--multi'], ['--multiple']),
+    description:
+      "This flag helps you to migrate multiple content files in a single instance.",
+    parse: printFlagDeprecation(["--multi"], ["--multiple"]),
     hidden: true,
   }),
   multiple: flags.boolean({
-    description: 'This flag helps you to migrate multiple content files in a single instance.',
+    description:
+      "This flag helps you to migrate multiple content files in a single instance.",
   }),
 };
 
-MigrationCommand.aliases = ['cm:migration'];
+MigrationCommand.aliases = ["cm:migration"];
 
-MigrationCommand.usage = 'cm:stacks:migration [-k <value>] [-a <value>] [--file-path <value>] [--branch <value>] [--config-file <value>] [--config <value>] [--multiple]';
+MigrationCommand.usage =
+  "cm:stacks:migration [-k <value>] [-a <value>] [--file-path <value>] [--branch <value>] [--config-file <value>] [--config <value>] [--multiple]";
 
 module.exports = MigrationCommand;

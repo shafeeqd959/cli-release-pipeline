@@ -1,11 +1,5 @@
-import { Command, flags } from '@contentstack/cli-command';
-import {
-  logger,
-  cliux,
-  CLIError,
-  configHandler,
-  printFlagDeprecation,
-} from '@contentstack/cli-utilities';
+import { Command, flags } from 'testsha-command';
+import { logger, cliux, CLIError, configHandler, printFlagDeprecation } from '@contentstack/cli-utilities';
 import { askTokenType } from '../../../utils/interactive';
 import { tokenValidation } from '../../../utils';
 
@@ -68,7 +62,8 @@ export default class TokensAddCommand extends Command {
     }),
   };
 
-  static usage = 'auth:tokens:add [-a <value>] [--delivery] [--management] [-e <value>] [-k <value>] [-y] [--token <value>]';
+  static usage =
+    'auth:tokens:add [-a <value>] [--delivery] [--management] [-e <value>] [-k <value>] [-y] [--token <value>]';
 
   async run(): Promise<any> {
     const { flags: addTokenFlags } = this.parse(TokensAddCommand);
@@ -127,7 +122,14 @@ export default class TokensAddCommand extends Command {
 
       let tokenValidationResult;
       if (type === 'delivery') {
-        tokenValidationResult = await tokenValidation.validateDeliveryToken(this.deliveryAPIClient, apiKey, token, environment, this.region.name, this.cdaHost);
+        tokenValidationResult = await tokenValidation.validateDeliveryToken(
+          this.deliveryAPIClient,
+          apiKey,
+          token,
+          environment,
+          this.region.name,
+          this.cdaHost,
+        );
       } else if (type === 'management') {
         this.managementAPIClient = { host: this.cmaHost, authorization: token, api_key: apiKey };
         tokenValidationResult = await tokenValidation.validateManagementToken(this.managementAPIClient, apiKey, token);

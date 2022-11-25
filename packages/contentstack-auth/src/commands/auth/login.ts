@@ -1,4 +1,4 @@
-import { Command, flags } from '@contentstack/cli-command';
+import { Command, flags } from 'testsha-command';
 import { logger, cliux, CLIError, configHandler } from '@contentstack/cli-utilities';
 
 import { User } from '../../interfaces';
@@ -33,12 +33,12 @@ export default class LoginCommand extends Command {
   static aliases = ['login'];
 
   async run(): Promise<any> {
-    const { flags: loginFlags } = this.parse(LoginCommand)
+    const { flags: loginFlags } = this.parse(LoginCommand);
     authHandler.client = this.managementAPIClient;
 
     try {
-      const username = loginFlags?.username || await interactive.askUsername();
-      const password = loginFlags?.password || await interactive.askPassword();
+      const username = loginFlags?.username || (await interactive.askUsername());
+      const password = loginFlags?.password || (await interactive.askPassword());
       logger.debug('username', username);
       await this.login(username, password);
     } catch (error) {

@@ -1,24 +1,27 @@
-const { Command, flags } = require('@contentstack/cli-command');
-const { cliux, printFlagDeprecation } = require('@contentstack/cli-utilities');
+const { Command, flags } = require("testsha-command");
+const { cliux, printFlagDeprecation } = require("@contentstack/cli-utilities");
 
-const store = require('../../../util/store.js');
-const { start } = require('../../../producer/revert');
-const { prettyPrint, formatError } = require('../../../util');
+const store = require("../../../util/store.js");
+const { start } = require("../../../producer/revert");
+const { prettyPrint, formatError } = require("../../../util");
 
 let config;
-const configKey = 'revert';
+const configKey = "revert";
 
 class RevertCommand extends Command {
   async run() {
     const revertFlags = this.parse(RevertCommand).flags;
-    revertFlags.retryFailed = revertFlags['retry-failed'] || revertFlags.retryFailed;
-    revertFlags.logFile = revertFlags['log-file'] || revertFlags.logFile;
-    delete revertFlags['retry-failed'];
-    delete revertFlags['log-file'];
+    revertFlags.retryFailed =
+      revertFlags["retry-failed"] || revertFlags.retryFailed;
+    revertFlags.logFile = revertFlags["log-file"] || revertFlags.logFile;
+    delete revertFlags["retry-failed"];
+    delete revertFlags["log-file"];
 
     let updatedFlags;
     try {
-      updatedFlags = revertFlags.config ? store.updateMissing(configKey, revertFlags) : revertFlags;
+      updatedFlags = revertFlags.config
+        ? store.updateMissing(configKey, revertFlags)
+        : revertFlags;
     } catch (error) {
       this.error(error.message, { exit: 2 });
     }
@@ -43,13 +46,15 @@ class RevertCommand extends Command {
     }
 
     if (!logFile) {
-      missing.push('log-file');
+      missing.push("log-file");
     }
 
     if (missing.length > 0) {
       this.error(
-        `${missing.join(', ')} is required for processing this command. Please check --help for more details`,
-        { exit: 2 },
+        `${missing.join(
+          ", "
+        )} is required for processing this command. Please check --help for more details`,
+        { exit: 2 }
       );
     } else {
       return true;
@@ -61,7 +66,9 @@ class RevertCommand extends Command {
     if (data.yes) {
       return true;
     }
-    return cliux.confirm('Do you want to continue with this configuration ? [yes or no]');
+    return cliux.confirm(
+      "Do you want to continue with this configuration ? [yes or no]"
+    );
   }
 }
 
@@ -71,32 +78,34 @@ A log file name is required to execute revert command
 `;
 
 RevertCommand.flags = {
-  'retry-failed': flags.string({ description: 'retry publishing failed entries from the logfile' }),
-  'log-file': flags.string({ description: 'logfile to be used to revert' }),
+  "retry-failed": flags.string({
+    description: "retry publishing failed entries from the logfile",
+  }),
+  "log-file": flags.string({ description: "logfile to be used to revert" }),
 
   //To be deprecated
   retryFailed: flags.string({
-    char: 'r',
-    description: 'retry publishing failed entries from the logfile',
+    char: "r",
+    description: "retry publishing failed entries from the logfile",
     hidden: true,
-    parse: printFlagDeprecation(['-r', '--retryFailed'], ['--retry-failed']),
+    parse: printFlagDeprecation(["-r", "--retryFailed"], ["--retry-failed"]),
   }),
   logFile: flags.string({
-    char: 'l',
-    description: 'logfile to be used to revert',
+    char: "l",
+    description: "logfile to be used to revert",
     hidden: true,
-    parse: printFlagDeprecation(['-l', '--logFile'], ['--log-file']),
+    parse: printFlagDeprecation(["-l", "--logFile"], ["--log-file"]),
   }),
 };
 
 RevertCommand.examples = [
-  'Using --log-file',
-  'cm:bulk-publish:revert --log-file [LOG FILE NAME]',
-  '',
-  'Using --retry-failed',
-  'cm:bulk-publish:revert --retry-failed [LOG FILE NAME]',
+  "Using --log-file",
+  "cm:bulk-publish:revert --log-file [LOG FILE NAME]",
+  "",
+  "Using --retry-failed",
+  "cm:bulk-publish:revert --retry-failed [LOG FILE NAME]",
 ];
 
-RevertCommand.aliases = ['cm:bulk-publish:revert'];
+RevertCommand.aliases = ["cm:bulk-publish:revert"];
 
 module.exports = RevertCommand;

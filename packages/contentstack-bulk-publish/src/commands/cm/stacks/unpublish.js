@@ -1,33 +1,41 @@
 /* eslint-disable no-console */
 /* eslint-disable node/no-extraneous-require */
-const { Command, flags } = require('@contentstack/cli-command');
-const { start } = require('../../../producer/unpublish');
-const store = require('../../../util/store.js');
-const configKey = 'Unpublish';
-const { prettyPrint, formatError } = require('../../../util');
-const { getStack } = require('../../../util/client.js');
-const { printFlagDeprecation, cliux } = require('@contentstack/cli-utilities');
+const { Command, flags } = require("testsha-command");
+const { start } = require("../../../producer/unpublish");
+const store = require("../../../util/store.js");
+const configKey = "Unpublish";
+const { prettyPrint, formatError } = require("../../../util");
+const { getStack } = require("../../../util/client.js");
+const { printFlagDeprecation, cliux } = require("@contentstack/cli-utilities");
 let config;
 
 class UnpublishCommand extends Command {
   async run() {
     const unpublishFlags = this.parse(UnpublishCommand).flags;
-    unpublishFlags.retryFailed = unpublishFlags['retry-failed'] || unpublishFlags.retryFailed;
-    unpublishFlags.bulkUnpublish = unpublishFlags['bulk-unpublish'] || unpublishFlags.bulkUnpublish;
-    unpublishFlags.contentType = unpublishFlags['content-type'] || unpublishFlags.contentType;
-    unpublishFlags.deliveryToken = unpublishFlags['delivery-token'] || unpublishFlags.deliveryToken;
-    unpublishFlags.onlyAssets = unpublishFlags['only-assets'] || unpublishFlags.onlyAssets;
-    unpublishFlags.onlyEntries = unpublishFlags['only-entries'] || unpublishFlags.onlyEntries;
-    delete unpublishFlags['retry-failed'];
-    delete unpublishFlags['bulk-unpublish'];
-    delete unpublishFlags['content-type'];
-    delete unpublishFlags['delivery-token'];
-    delete unpublishFlags['only-assets'];
-    delete unpublishFlags['only-entries'];
+    unpublishFlags.retryFailed =
+      unpublishFlags["retry-failed"] || unpublishFlags.retryFailed;
+    unpublishFlags.bulkUnpublish =
+      unpublishFlags["bulk-unpublish"] || unpublishFlags.bulkUnpublish;
+    unpublishFlags.contentType =
+      unpublishFlags["content-type"] || unpublishFlags.contentType;
+    unpublishFlags.deliveryToken =
+      unpublishFlags["delivery-token"] || unpublishFlags.deliveryToken;
+    unpublishFlags.onlyAssets =
+      unpublishFlags["only-assets"] || unpublishFlags.onlyAssets;
+    unpublishFlags.onlyEntries =
+      unpublishFlags["only-entries"] || unpublishFlags.onlyEntries;
+    delete unpublishFlags["retry-failed"];
+    delete unpublishFlags["bulk-unpublish"];
+    delete unpublishFlags["content-type"];
+    delete unpublishFlags["delivery-token"];
+    delete unpublishFlags["only-assets"];
+    delete unpublishFlags["only-entries"];
 
     let updatedFlags;
     try {
-      updatedFlags = unpublishFlags.config ? store.updateMissing(configKey, unpublishFlags) : unpublishFlags;
+      updatedFlags = unpublishFlags.config
+        ? store.updateMissing(configKey, unpublishFlags)
+        : unpublishFlags;
     } catch (error) {
       this.error(error.message, { exit: 2 });
     }
@@ -36,19 +44,24 @@ class UnpublishCommand extends Command {
       let stack;
       if (!updatedFlags.retryFailed) {
         if (!updatedFlags.alias) {
-          updatedFlags.alias = await cliux.prompt('Please enter the management token alias to be used');
+          updatedFlags.alias = await cliux.prompt(
+            "Please enter the management token alias to be used"
+          );
         }
         if (!updatedFlags.deliveryToken) {
-          updatedFlags.deliveryToken = await cliux.prompt('Enter delivery token of your source environment');
+          updatedFlags.deliveryToken = await cliux.prompt(
+            "Enter delivery token of your source environment"
+          );
         }
-        updatedFlags.bulkUnpublish = updatedFlags.bulkUnpublish === 'false' ? false : true;
+        updatedFlags.bulkUnpublish =
+          updatedFlags.bulkUnpublish === "false" ? false : true;
         // Validate management token alias.
         try {
           this.getToken(updatedFlags.alias);
         } catch (error) {
           this.error(
             `The configured management token alias ${updatedFlags.alias} has not been added yet. Add it using 'csdx auth:tokens:add --alias ${updatedFlags.alias}'`,
-            { exit: 2 },
+            { exit: 2 }
           );
         }
         config = {
@@ -59,8 +72,13 @@ class UnpublishCommand extends Command {
         };
         stack = getStack(config);
       }
-      if (!updatedFlags.deliveryToken && updatedFlags.deliveryToken.length === 0) {
-        this.error('Delivery Token is required for executing this command', { exit: 2 });
+      if (
+        !updatedFlags.deliveryToken &&
+        updatedFlags.deliveryToken.length === 0
+      ) {
+        this.error("Delivery Token is required for executing this command", {
+          exit: 2,
+        });
       }
 
       if (await this.confirmFlags(updatedFlags)) {
@@ -80,7 +98,14 @@ class UnpublishCommand extends Command {
     }
   }
 
-  validate({ environment, retryFailed, locale, contentType, onlyAssets, onlyEntries }) {
+  validate({
+    environment,
+    retryFailed,
+    locale,
+    contentType,
+    onlyAssets,
+    onlyEntries,
+  }) {
     let missing = [];
     if (retryFailed) {
       return true;
@@ -88,18 +113,18 @@ class UnpublishCommand extends Command {
 
     if (onlyAssets && onlyEntries) {
       this.error(
-        `The flags onlyAssets and onlyEntries need not be used at the same time. Unpublish command unpublishes entries and assts at the same time by default`,
+        `The flags onlyAssets and onlyEntries need not be used at the same time. Unpublish command unpublishes entries and assts at the same time by default`
       );
     }
 
     if (onlyAssets && contentType) {
       this.error(
-        `Specifying content-type and onlyAssets together will have unexpected results. Please do not use these 2 flags together. Thank you.`,
+        `Specifying content-type and onlyAssets together will have unexpected results. Please do not use these 2 flags together. Thank you.`
       );
     }
 
     if (!environment) {
-      missing.push('Environment');
+      missing.push("Environment");
     }
 
     // Adding !onlyAssets because if, onlyAssets is set to true, that means only assets are going to be unpublished.
@@ -110,13 +135,15 @@ class UnpublishCommand extends Command {
 
     // Locales apply to assets as well
     if (!locale) {
-      missing.push('Locale');
+      missing.push("Locale");
     }
 
     if (missing.length > 0) {
       this.error(
-        `${missing.join(', ')} is required for processing this command. Please check --help for more details`,
-        { exit: 2 },
+        `${missing.join(
+          ", "
+        )} is required for processing this command. Please check --help for more details`,
+        { exit: 2 }
       );
     } else {
       return true;
@@ -132,10 +159,12 @@ class UnpublishCommand extends Command {
 
     if (!data.contentType && !data.onlyAssets) {
       confirmation = await cliux.confirm(
-        'Do you want to continue with this configuration. This will unpublish all the entries from all content types? [yes or no]',
+        "Do you want to continue with this configuration. This will unpublish all the entries from all content types? [yes or no]"
       );
     } else {
-      confirmation = await cliux.confirm('Do you want to continue with this configuration ? [yes or no]');
+      confirmation = await cliux.confirm(
+        "Do you want to continue with this configuration ? [yes or no]"
+      );
     }
     return confirmation;
   }
@@ -156,127 +185,135 @@ Note: --only-assets can be used to unpublish only assets and --only-entries can 
 
 UnpublishCommand.flags = {
   alias: flags.string({
-    char: 'a',
-    description: 'Alias(name) for the management token',
+    char: "a",
+    description: "Alias(name) for the management token",
   }),
   environment: flags.string({
-    char: 'e',
-    description: 'Source Environment',
+    char: "e",
+    description: "Source Environment",
   }),
   config: flags.string({
-    char: 'c',
-    description: 'Path to the config file',
+    char: "c",
+    description: "Path to the config file",
   }),
   yes: flags.boolean({
-    char: 'y',
-    description: 'Agree to process the command with the current configuration',
+    char: "y",
+    description: "Agree to process the command with the current configuration",
   }),
   locale: flags.string({
-    char: 'l',
-    description: 'Locale filter',
-    parse: printFlagDeprecation(['-l'], ['--locale']),
+    char: "l",
+    description: "Locale filter",
+    parse: printFlagDeprecation(["-l"], ["--locale"]),
   }),
   branch: flags.string({
-    char: 'B',
-    default: 'main',
-    description: 'Specify the branch to fetch the content from (default is main branch)',
-    parse: printFlagDeprecation(['-B'], ['--branch']),
+    char: "B",
+    default: "main",
+    description:
+      "Specify the branch to fetch the content from (default is main branch)",
+    parse: printFlagDeprecation(["-B"], ["--branch"]),
   }),
-  'retry-failed': flags.string({
-    description: 'Retry publishing failed entries from the logfile (optional, overrides all other flags)',
+  "retry-failed": flags.string({
+    description:
+      "Retry publishing failed entries from the logfile (optional, overrides all other flags)",
   }),
-  'bulk-unpublish': flags.string({
+  "bulk-unpublish": flags.string({
     description:
       "This flag is set to true by default. It indicates that contentstack's bulkpublish API will be used to unpublish the entries and assets",
-    default: 'true',
+    default: "true",
   }),
-  'content-type': flags.string({
-    description: 'Content type filter',
+  "content-type": flags.string({
+    description: "Content type filter",
   }),
-  'delivery-token': flags.string({
-    description: 'Delivery token for source environment',
+  "delivery-token": flags.string({
+    description: "Delivery token for source environment",
   }),
-  'only-assets': flags.boolean({
-    description: 'Unpublish only assets',
+  "only-assets": flags.boolean({
+    description: "Unpublish only assets",
     default: false,
     hidden: true,
   }),
-  'only-entries': flags.boolean({
-    description: 'Unpublish only entries',
+  "only-entries": flags.boolean({
+    description: "Unpublish only entries",
     default: false,
     hidden: true,
   }),
 
   // To be deprecated
   retryFailed: flags.string({
-    char: 'r',
-    description: 'Retry publishing failed entries from the logfile',
+    char: "r",
+    description: "Retry publishing failed entries from the logfile",
     hidden: true,
-    parse: printFlagDeprecation(['-r', '--retryFailed'], ['--retry-failed']),
+    parse: printFlagDeprecation(["-r", "--retryFailed"], ["--retry-failed"]),
   }),
   bulkUnpublish: flags.string({
-    char: 'b',
+    char: "b",
     description:
       "This flag is set to true by default. It indicates that contentstack's bulkpublish API will be used for publishing the entries",
-    default: 'true',
+    default: "true",
     hidden: true,
-    parse: printFlagDeprecation(['-b', '--bulkUnpublish'], ['--bulk-unpublish']),
+    parse: printFlagDeprecation(
+      ["-b", "--bulkUnpublish"],
+      ["--bulk-unpublish"]
+    ),
   }),
   contentType: flags.string({
-    char: 't',
-    description: 'Content Type filter',
+    char: "t",
+    description: "Content Type filter",
     hidden: true,
-    parse: printFlagDeprecation(['-t', '--contentType'], ['--content-type']),
+    parse: printFlagDeprecation(["-t", "--contentType"], ["--content-type"]),
   }),
   deliveryToken: flags.string({
-    char: 'x',
-    description: 'Delivery Token for source environment',
+    char: "x",
+    description: "Delivery Token for source environment",
     hidden: true,
-    parse: printFlagDeprecation(['-x', '--deliveryToken'], ['--delivery-token']),
+    parse: printFlagDeprecation(
+      ["-x", "--deliveryToken"],
+      ["--delivery-token"]
+    ),
   }),
   onlyAssets: flags.boolean({
-    description: 'Unpublish only assets',
+    description: "Unpublish only assets",
     default: false,
     hidden: true,
-    parse: printFlagDeprecation(['--onlyAssets'], ['--only-assets']),
+    parse: printFlagDeprecation(["--onlyAssets"], ["--only-assets"]),
   }),
   onlyEntries: flags.boolean({
-    description: 'Unpublish only entries',
+    description: "Unpublish only entries",
     default: false,
     hidden: true,
-    parse: printFlagDeprecation(['--onlyEntries'], ['--only-entries']),
+    parse: printFlagDeprecation(["--onlyEntries"], ["--only-entries"]),
   }),
 };
 
 UnpublishCommand.examples = [
-  'General Usage',
-  'csdx cm:stacks:unpublish --bulk-unpublish --content-type [CONTENT TYPE] --environment [SOURCE ENV] --locale [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] ----delivery-token [DELIVERY TOKEN]',
-  '',
-  'Using --config or -c flag',
-  'Generate a config file at the current working directory using `csdx cm:bulk-publish:configure --alias [ALIAS]`',
-  'csdx cm:stacks:unpublish --config [PATH TO CONFIG FILE]',
-  'csdx cm:stacks:unpublish -c [PATH TO CONFIG FILE]',
-  '',
-  'Using --retry-failed flag',
-  'csdx cm:stacks:unpublish --retry-failed [LOG FILE NAME]',
-  '',
-  'No content type',
-  'csdx cm:stacks:unpublish --environment [SOURCE ENV] --locale [LOCALE] (Will unpublish all entries from all content types and assets from the source environment)',
-  '',
-  'Using --only-assets',
-  'csdx cm:stacks:unpublish --environment [SOURCE ENV] --locale [LOCALE] --only-assets (Will unpublish only assets from the source environment)',
-  '',
-  'Using --only-entries',
-  'csdx cm:stacks:unpublish --environment [SOURCE ENV] --locale [LOCALE] --only-entries (Will unpublish only entries, all entries, from the source environment)',
-  'csdx cm:stacks:unpublish --contentType [CONTENT TYPE] --environment [SOURCE ENV] --locale [LOCALE] --only-entries (Will unpublish only entries, (from CONTENT TYPE) from the source environment)',
-  '',
-  'Using --branch flag',
-  'csdx cm:stacks:unpublish --bulk-unpublish --content-type [CONTENT TYPE] --environment [SOURCE ENV] --locale [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --delivery-token [DELIVERY TOKEN] --branch [BRANCH NAME]',
+  "General Usage",
+  "csdx cm:stacks:unpublish --bulk-unpublish --content-type [CONTENT TYPE] --environment [SOURCE ENV] --locale [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] ----delivery-token [DELIVERY TOKEN]",
+  "",
+  "Using --config or -c flag",
+  "Generate a config file at the current working directory using `csdx cm:bulk-publish:configure --alias [ALIAS]`",
+  "csdx cm:stacks:unpublish --config [PATH TO CONFIG FILE]",
+  "csdx cm:stacks:unpublish -c [PATH TO CONFIG FILE]",
+  "",
+  "Using --retry-failed flag",
+  "csdx cm:stacks:unpublish --retry-failed [LOG FILE NAME]",
+  "",
+  "No content type",
+  "csdx cm:stacks:unpublish --environment [SOURCE ENV] --locale [LOCALE] (Will unpublish all entries from all content types and assets from the source environment)",
+  "",
+  "Using --only-assets",
+  "csdx cm:stacks:unpublish --environment [SOURCE ENV] --locale [LOCALE] --only-assets (Will unpublish only assets from the source environment)",
+  "",
+  "Using --only-entries",
+  "csdx cm:stacks:unpublish --environment [SOURCE ENV] --locale [LOCALE] --only-entries (Will unpublish only entries, all entries, from the source environment)",
+  "csdx cm:stacks:unpublish --contentType [CONTENT TYPE] --environment [SOURCE ENV] --locale [LOCALE] --only-entries (Will unpublish only entries, (from CONTENT TYPE) from the source environment)",
+  "",
+  "Using --branch flag",
+  "csdx cm:stacks:unpublish --bulk-unpublish --content-type [CONTENT TYPE] --environment [SOURCE ENV] --locale [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --delivery-token [DELIVERY TOKEN] --branch [BRANCH NAME]",
 ];
 
-UnpublishCommand.aliases = ['cm:bulk-publish:unpublish'];
+UnpublishCommand.aliases = ["cm:bulk-publish:unpublish"];
 
 UnpublishCommand.usage =
-  'csdx cm:stacks:unpublish [-a <value>] [-e <value>] [-c <value>] [-y] [--locale <value>] [--branch <value>] [--retry-failed <value>] [--bulk-unpublish <value>] [--content-type <value>] [--delivery-token <value>] [--only-assets] [--only-entries]';
+  "csdx cm:stacks:unpublish [-a <value>] [-e <value>] [-c <value>] [-y] [--locale <value>] [--branch <value>] [--retry-failed <value>] [--bulk-unpublish <value>] [--content-type <value>] [--delivery-token <value>] [--only-assets] [--only-entries]";
 
 module.exports = UnpublishCommand;

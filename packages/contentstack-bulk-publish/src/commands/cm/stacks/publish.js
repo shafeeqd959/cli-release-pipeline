@@ -1,22 +1,32 @@
-'use strict';
+"use strict";
 
-const { Command } = require('@contentstack/cli-command');
-const { getSelectedCommand } = require('../../../util/command-helper');
-const AssetsPublishReceiverCommand = require('../assets/publish');
-const EntriesPublishReceiverCommand = require('../entries/publish');
+const { Command } = require("testsha-command");
+const { getSelectedCommand } = require("../../../util/command-helper");
+const AssetsPublishReceiverCommand = require("../assets/publish");
+const EntriesPublishReceiverCommand = require("../entries/publish");
 
 class StackPublishCommand extends Command {
   async run() {
     try {
       this.optionController = new OptionController();
 
-      this.entriesPublishReceiver = new EntriesPublishReceiverCommand(this.argv);
+      this.entriesPublishReceiver = new EntriesPublishReceiverCommand(
+        this.argv
+      );
       this.assetsPublishReceiver = new AssetsPublishReceiverCommand(this.argv);
-      this.entriesAndAssetsPublishReceiver = new PublishEntriesAndAssetsCommand();
+      this.entriesAndAssetsPublishReceiver =
+        new PublishEntriesAndAssetsCommand();
 
-      this.publishEntriesCommand = new PublishEntriesCommand(this.entriesPublishReceiver);
-      this.publishAssetsCommand = new PublishAssetsCommand(this.assetsPublishReceiver);
-      this.publishEntriesAndAssetsCommand = new PublishEntriesAndAssetsCommand(this.entriesPublishReceiver, this.assetsPublishReceiver);
+      this.publishEntriesCommand = new PublishEntriesCommand(
+        this.entriesPublishReceiver
+      );
+      this.publishAssetsCommand = new PublishAssetsCommand(
+        this.assetsPublishReceiver
+      );
+      this.publishEntriesAndAssetsCommand = new PublishEntriesAndAssetsCommand(
+        this.entriesPublishReceiver,
+        this.assetsPublishReceiver
+      );
 
       this.optionController.setCommand(0, this.publishEntriesCommand);
       this.optionController.setCommand(1, this.publishAssetsCommand);
@@ -38,19 +48,19 @@ Note: Environments and Locales are required to execute the publish assets comman
 But, if retry-failed flag is set, then only a logfile is required`;
 
 StackPublishCommand.examples = [
-  'General Usage',
-  'csdx cm:stacks:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS]',
-  '',
-  'Using --config or -c flag',
-  'Generate a config file in the current working directory using `csdx cm:stacks:publish-configure -a [ALIAS]`',
-  'csdx cm:stacks:publish --config [PATH TO CONFIG FILE]',
-  'csdx cm:stacks:publish -c [PATH TO CONFIG FILE]',
-  '',
-  'Using --retry-failed flag',
-  'csdx cm:stacks:publish --retry-failed [LOG FILE NAME]',
-  '',
-  'Using --branch flag',
-  'csdx cm:stacks:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --branch [BRANCH NAME]'
+  "General Usage",
+  "csdx cm:stacks:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS]",
+  "",
+  "Using --config or -c flag",
+  "Generate a config file in the current working directory using `csdx cm:stacks:publish-configure -a [ALIAS]`",
+  "csdx cm:stacks:publish --config [PATH TO CONFIG FILE]",
+  "csdx cm:stacks:publish -c [PATH TO CONFIG FILE]",
+  "",
+  "Using --retry-failed flag",
+  "csdx cm:stacks:publish --retry-failed [LOG FILE NAME]",
+  "",
+  "Using --branch flag",
+  "csdx cm:stacks:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --branch [BRANCH NAME]",
 ];
 
 StackPublishCommand.flags = []; // Same as entries and assets.
@@ -77,7 +87,7 @@ class OptionController {
 }
 
 class NoCommand {
-  execute() { }
+  execute() {}
 }
 
 class PublishEntriesCommand {

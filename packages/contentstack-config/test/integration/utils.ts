@@ -1,10 +1,10 @@
-import { Command } from '@contentstack/cli-command';
+import { Command } from "testsha-command";
 
 // helper function for timing
-export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class Helper extends Command {
   async run() {
-    return this.region
+    return this.region;
   }
 }

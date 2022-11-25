@@ -1,21 +1,21 @@
-import { Command } from '@contentstack/cli-command';
+import { Command } from 'testsha-command';
 
 export interface MockSTDIN {
   /** Queue up data to be read by the stream. Results in data (and possibly end) events being dispatched. */
-  send: (data: String | Buffer | string[] | null, encoding?: string) => MockSTDIN
+  send: (data: String | Buffer | string[] | null, encoding?: string) => MockSTDIN;
   /** Alias for MockSTDIN.send(null). Results in dispatching an end event. */
-  end: () => MockSTDIN
+  end: () => MockSTDIN;
   /** Restore the target of the mocked stream. If only a single mock stream is created, will restore the original stdin TTY stream. If multiple mock streams are created, it will restore the stream which was active at the time the mock was created. */
-  restore: () => MockSTDIN
+  restore: () => MockSTDIN;
   /**
    * Ordinarily, a Readable stream will throw when attempting to push after an EOF. This routine will reset the ended state of a Readable stream, preventing it from throwing post-EOF. This prevents being required to re-create a mock STDIN instance during certain tests where a fresh stdin is required.
    * @param removeListeners - When set to true, will remove all event listeners attached to the stream.
    */
-  reset: (removeListeners?: boolean) => MockSTDIN
+  reset: (removeListeners?: boolean) => MockSTDIN;
 }
 
 // helper function for timing
-export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // # Here are the various escape sequences we can capture
 // '\x0d': 'return'
@@ -61,8 +61,8 @@ const keys = {
 
 class Helper extends Command {
   async run() {
-    return this.email
+    return this.email;
   }
 }
 
-export { keys, Helper }
+export { keys, Helper };

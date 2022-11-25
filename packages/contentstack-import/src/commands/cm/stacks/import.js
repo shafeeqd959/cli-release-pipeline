@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const defaultConfig = require('../../../config/default');
-const { Command, flags } = require('@contentstack/cli-command');
-const { configHandler } = require('@contentstack/cli-utilities');
+const _ = require("lodash");
+const defaultConfig = require("../../../config/default");
+const { Command, flags } = require("testsha-command");
+const { configHandler } = require("@contentstack/cli-utilities");
 const {
   configWithMToken,
   parameterWithMToken,
@@ -9,24 +9,28 @@ const {
   configWithAuthToken,
   parametersWithAuthToken,
   withoutParametersWithAuthToken,
-} = require('../../../lib/util/import-flags');
-const { printFlagDeprecation } = require('@contentstack/cli-utilities');
+} = require("../../../lib/util/import-flags");
+const { printFlagDeprecation } = require("@contentstack/cli-utilities");
 
 class ImportCommand extends Command {
   async run() {
     let self = this;
     const importCommandFlags = self.parse(ImportCommand).flags;
     const extConfig = importCommandFlags.config;
-    let targetStack = importCommandFlags['stack-uid'] || importCommandFlags['stack-api-key'];
-    const data = importCommandFlags.data || importCommandFlags['data-dir'];
+    let targetStack =
+      importCommandFlags["stack-uid"] || importCommandFlags["stack-api-key"];
+    const data = importCommandFlags.data || importCommandFlags["data-dir"];
     const moduleName = importCommandFlags.module;
-    const backupdir = importCommandFlags['backup-dir'];
-    const alias = importCommandFlags['alias'] || importCommandFlags['management-token-alias'];
-    let _authToken = configHandler.get('authtoken');
+    const backupdir = importCommandFlags["backup-dir"];
+    const alias =
+      importCommandFlags["alias"] ||
+      importCommandFlags["management-token-alias"];
+    let _authToken = configHandler.get("authtoken");
     importCommandFlags.branchName = importCommandFlags.branch;
-    importCommandFlags.importWebhookStatus = importCommandFlags['import-webhook-status'];
+    importCommandFlags.importWebhookStatus =
+      importCommandFlags["import-webhook-status"];
     delete importCommandFlags.branch;
-    delete importCommandFlags['import-webhook-status'];
+    delete importCommandFlags["import-webhook-status"];
     let host = self.cmaHost;
 
     return new Promise((resolve, reject) => {
@@ -34,7 +38,7 @@ class ImportCommand extends Command {
         defaultConfig.data = data;
       }
 
-      defaultConfig.forceMarketplaceAppsImport = importCommandFlags.yes
+      defaultConfig.forceMarketplaceAppsImport = importCommandFlags.yes;
 
       if (alias) {
         let managementTokens = self.getToken(alias);
@@ -50,7 +54,7 @@ class ImportCommand extends Command {
               host,
               _authToken,
               backupdir,
-              importCommandFlags,
+              importCommandFlags
             );
           } else if (data) {
             result = parameterWithMToken(
@@ -60,7 +64,7 @@ class ImportCommand extends Command {
               host,
               _authToken,
               backupdir,
-              importCommandFlags,
+              importCommandFlags
             );
           } else {
             result = withoutParameterMToken(
@@ -69,19 +73,28 @@ class ImportCommand extends Command {
               host,
               _authToken,
               backupdir,
-              importCommandFlags,
+              importCommandFlags
             );
           }
 
           result.then(resolve).catch(reject);
         } else {
-          console.log('management Token is not present please add managment token first');
+          console.log(
+            "management Token is not present please add managment token first"
+          );
         }
       } else if (_authToken) {
         let result;
 
         if (extConfig) {
-          result = configWithAuthToken(extConfig, _authToken, moduleName, host, backupdir, importCommandFlags);
+          result = configWithAuthToken(
+            extConfig,
+            _authToken,
+            moduleName,
+            host,
+            backupdir,
+            importCommandFlags
+          );
         } else if (targetStack && data) {
           result = parametersWithAuthToken(
             _authToken,
@@ -90,15 +103,21 @@ class ImportCommand extends Command {
             moduleName,
             host,
             backupdir,
-            importCommandFlags,
+            importCommandFlags
           );
         } else {
-          result = withoutParametersWithAuthToken(_authToken, moduleName, host, backupdir, importCommandFlags);
+          result = withoutParametersWithAuthToken(
+            _authToken,
+            moduleName,
+            host,
+            backupdir,
+            importCommandFlags
+          );
         }
 
         result.then(resolve).catch(reject);
       } else {
-        console.log('Login or provide the alias for management token');
+        console.log("Login or provide the alias for management token");
       }
     });
   }
@@ -120,74 +139,80 @@ ImportCommand.examples = [
 ];
 ImportCommand.flags = {
   config: flags.string({
-    char: 'c',
-    description: '[optional] path of config file',
+    char: "c",
+    description: "[optional] path of config file",
   }),
-  'stack-uid': flags.string({
-    char: 's',
-    description: 'API key of the target stack',
+  "stack-uid": flags.string({
+    char: "s",
+    description: "API key of the target stack",
     hidden: true,
-    parse: printFlagDeprecation(['-s', '--stack-uid'], ['-k', '--stack-api-key']),
+    parse: printFlagDeprecation(
+      ["-s", "--stack-uid"],
+      ["-k", "--stack-api-key"]
+    ),
   }),
-  'stack-api-key': flags.string({
-    char: 'k',
-    description: 'API key of the target stack',
+  "stack-api-key": flags.string({
+    char: "k",
+    description: "API key of the target stack",
   }),
   data: flags.string({
-    description: 'path and location where data is stored',
+    description: "path and location where data is stored",
     hidden: true,
-    parse: printFlagDeprecation(['--data'], ['--data-dir']),
+    parse: printFlagDeprecation(["--data"], ["--data-dir"]),
   }),
-  'data-dir': flags.string({
-    char: 'd',
-    description: 'path and location where data is stored',
+  "data-dir": flags.string({
+    char: "d",
+    description: "path and location where data is stored",
   }),
   alias: flags.string({
-    char: 'a',
-    description: 'alias of the management token',
+    char: "a",
+    description: "alias of the management token",
   }),
-  'management-token-alias': flags.string({
-    description: 'alias of the management token',
+  "management-token-alias": flags.string({
+    description: "alias of the management token",
     hidden: true,
-    parse: printFlagDeprecation(['--management-token-alias'], ['-a', '--alias']),
+    parse: printFlagDeprecation(
+      ["--management-token-alias"],
+      ["-a", "--alias"]
+    ),
   }),
-  'auth-token': flags.boolean({
-    char: 'A',
-    description: 'to use auth token',
+  "auth-token": flags.boolean({
+    char: "A",
+    description: "to use auth token",
     hidden: true,
-    parse: printFlagDeprecation(['-A', '--auth-token']),
+    parse: printFlagDeprecation(["-A", "--auth-token"]),
   }),
   module: flags.string({
-    char: 'm',
-    description: '[optional] specific module name',
-    parse: printFlagDeprecation(['-m'], ['--module']),
+    char: "m",
+    description: "[optional] specific module name",
+    parse: printFlagDeprecation(["-m"], ["--module"]),
   }),
-  'backup-dir': flags.string({
-    char: 'b',
-    description: '[optional] backup directory name when using specific module',
-    parse: printFlagDeprecation(['-b'], ['--backup-dir']),
+  "backup-dir": flags.string({
+    char: "b",
+    description: "[optional] backup directory name when using specific module",
+    parse: printFlagDeprecation(["-b"], ["--backup-dir"]),
   }),
   branch: flags.string({
-    char: 'B',
-    description: '[optional] branch name',
-    parse: printFlagDeprecation(['-B'], ['--branch']),
+    char: "B",
+    description: "[optional] branch name",
+    parse: printFlagDeprecation(["-B"], ["--branch"]),
   }),
-  'import-webhook-status': flags.string({
-    description: 'Webhook state',
-    options: ['disable', 'current'],
+  "import-webhook-status": flags.string({
+    description: "Webhook state",
+    options: ["disable", "current"],
     required: false,
-    default: 'disable',
+    default: "disable",
   }),
   yes: flags.boolean({
-    char: 'y',
+    char: "y",
     required: false,
-    description: '[optional] Override marketplace prompts'
-  })
+    description: "[optional] Override marketplace prompts",
+  }),
 };
 
-ImportCommand.aliases = ['cm:import'];
+ImportCommand.aliases = ["cm:import"];
 
 ImportCommand.usage =
-  'cm:stacks:import [-c <value>] [-k <value>] [-d <value>] [-a <value>] [--module <value>] [--backup-dir <value>] [--branch <value>] [--import-webhook-status disable|current]';
+  "cm:stacks:import [-c <value>] [-k <value>] [-d <value>] [-a <value>] [--module <value>] [--backup-dir <value>] [--branch <value>] [--import-webhook-status disable|current]";
 
 module.exports = ImportCommand;

@@ -3,17 +3,22 @@
 /* eslint-disable complexity */
 /* eslint-disable no-console */
 /* eslint-disable camelcase */
-const { getQueue } = require('../util/queue');
-const defaults = require('../config/defaults.json');
-const { performBulkUnPublish, UnpublishEntry, UnpublishAsset, initializeLogger } = require('../consumer/publish');
-const retryFailedLogs = require('../util/retryfailed');
-const { validateFile } = require('../util/fs');
+const { getQueue } = require("../util/queue");
+const defaults = require("../config/defaults.json");
+const {
+  performBulkUnPublish,
+  UnpublishEntry,
+  UnpublishAsset,
+  initializeLogger,
+} = require("../consumer/publish");
+const retryFailedLogs = require("../util/retryfailed");
+const { validateFile } = require("../util/fs");
 const queue = getQueue();
 const entryQueue = getQueue();
 const assetQueue = getQueue();
-const { Command } = require('@contentstack/cli-command');
+const { Command } = require("testsha-command");
 const command = new Command();
-const { isEmpty } = require('../util');
+const { isEmpty } = require("../util");
 
 let bulkUnPublishSet = [];
 let bulkUnPulishAssetSet = [];
@@ -22,10 +27,10 @@ let filePath;
 
 function setConfig(conf, bup) {
   if (bup) {
-    logFileName = 'bulk-unpublish';
+    logFileName = "bulk-unpublish";
     queue.consumer = performBulkUnPublish;
   } else {
-    logFileName = 'unpublish';
+    logFileName = "unpublish";
     entryQueue.consumer = UnpublishEntry;
     assetQueue.consumer = UnpublishAsset;
   }
@@ -39,7 +44,7 @@ function setConfig(conf, bup) {
 let changedFlag = false;
 
 function getQueryParams(filter) {
-  let queryString = '';
+  let queryString = "";
   Object.keys(filter).forEach((key) => {
     if (filter[key]) {
       queryString = `${queryString}&${key}=${filter[key]}`;
@@ -55,16 +60,22 @@ function bulkAction(stack, items, bulkUnpublish, environment, locale) {
       changedFlag = true;
 
       if (bulkUnpublish) {
-        if (bulkUnPublishSet.length < 10 && items[index].type === 'entry_published') {
+        if (
+          bulkUnPublishSet.length < 10 &&
+          items[index].type === "entry_published"
+        ) {
           bulkUnPublishSet.push({
             uid: items[index].data.uid,
             content_type: items[index].content_type_uid,
-            locale: items[index].data.locale || 'en-us',
+            locale: items[index].data.locale || "en-us",
             publish_details: [items[index].data.publish_details] || [],
           });
         }
 
-        if (bulkUnPulishAssetSet.length < 10 && items[index].type === 'asset_published') {
+        if (
+          bulkUnPulishAssetSet.length < 10 &&
+          items[index].type === "asset_published"
+        ) {
           bulkUnPulishAssetSet.push({
             uid: items[index].data.uid,
             version: items[index].data._version,
@@ -75,7 +86,7 @@ function bulkAction(stack, items, bulkUnpublish, environment, locale) {
         if (bulkUnPulishAssetSet.length === 10) {
           await queue.Enqueue({
             assets: bulkUnPulishAssetSet,
-            Type: 'asset',
+            Type: "asset",
             locale: locale,
             environments: [environment],
             stack: stack,
@@ -87,16 +98,20 @@ function bulkAction(stack, items, bulkUnpublish, environment, locale) {
           await queue.Enqueue({
             entries: bulkUnPublishSet,
             locale: locale,
-            Type: 'entry',
+            Type: "entry",
             environments: [environment],
             stack: stack,
           });
           bulkUnPublishSet = [];
         }
-        if (index === items.length - 1 && bulkUnPulishAssetSet.length <= 10 && bulkUnPulishAssetSet.length > 0) {
+        if (
+          index === items.length - 1 &&
+          bulkUnPulishAssetSet.length <= 10 &&
+          bulkUnPulishAssetSet.length > 0
+        ) {
           await queue.Enqueue({
             assets: bulkUnPulishAssetSet,
-            Type: 'asset',
+            Type: "asset",
             locale: locale,
             environments: [environment],
             stack: stack,
@@ -104,34 +119,38 @@ function bulkAction(stack, items, bulkUnpublish, environment, locale) {
           bulkUnPulishAssetSet = [];
         }
 
-        if (index === items.length - 1 && bulkUnPublishSet.length <= 10 && bulkUnPublishSet.length > 0) {
+        if (
+          index === items.length - 1 &&
+          bulkUnPublishSet.length <= 10 &&
+          bulkUnPublishSet.length > 0
+        ) {
           await queue.Enqueue({
             entries: bulkUnPublishSet,
             locale: locale,
-            Type: 'entry',
+            Type: "entry",
             environments: [environment],
             stack: stack,
           });
           bulkUnPublishSet = [];
         }
       } else {
-        if (items[index].type === 'entry_published') {
+        if (items[index].type === "entry_published") {
           await entryQueue.Enqueue({
             content_type: items[index].content_type_uid,
             publish_details: [items[index].data.publish_details],
             environments: [environment],
             entryUid: items[index].data.uid,
-            locale: items[index].data.locale || 'en-us',
-            Type: 'entry',
+            locale: items[index].data.locale || "en-us",
+            Type: "entry",
             stack: stack,
           });
         }
-        if (items[index].type === 'asset_published') {
+        if (items[index].type === "asset_published") {
           await assetQueue.Enqueue({
             assetUid: items[index].data.uid,
             publish_details: [items[index].data.publish_details],
             environments: [environment],
-            Type: 'entry',
+            Type: "entry",
             stack: stack,
           });
         }
@@ -149,16 +168,18 @@ async function getSyncEntries(
   bulkUnpublish,
   environment,
   deliveryToken,
-  paginationToken = null,
+  paginationToken = null
 ) {
   return new Promise(async (resolve, reject) => {
     try {
       const tokenDetails = command.getToken(config.alias);
       const queryParamsObj = {};
-      const pairs = queryParams.split('&');
+      const pairs = queryParams.split("&");
       for (let i in pairs) {
-        const split = pairs[i].split('=');
-        queryParamsObj[decodeURIComponent(split[0])] = decodeURIComponent(split[1]);
+        const split = pairs[i].split("=");
+        queryParamsObj[decodeURIComponent(split[0])] = decodeURIComponent(
+          split[1]
+        );
       }
 
       const Stack = new command.deliveryAPIClient.Stack({
@@ -171,28 +192,46 @@ async function getSyncEntries(
       const syncData = {};
 
       if (paginationToken) {
-        syncData['pagination_token'] = paginationToken;
+        syncData["pagination_token"] = paginationToken;
       } else {
-        syncData['init'] = true;
+        syncData["init"] = true;
       }
       if (queryParamsObj.locale) {
-        syncData['locale'] = queryParamsObj.locale;
+        syncData["locale"] = queryParamsObj.locale;
       }
       if (queryParamsObj.type) {
-        syncData['type'] = queryParamsObj.type;
+        syncData["type"] = queryParamsObj.type;
       }
 
       const entriesResponse = await Stack.sync(syncData);
 
       if (entriesResponse.items.length > 0) {
-        await bulkAction(stack, entriesResponse.items, bulkUnpublish, environment, locale);
+        await bulkAction(
+          stack,
+          entriesResponse.items,
+          bulkUnpublish,
+          environment,
+          locale
+        );
       }
       if (entriesResponse.items.length === 0) {
-        if (!changedFlag) console.log('No Entries/Assets Found published on specified environment');
+        if (!changedFlag)
+          console.log(
+            "No Entries/Assets Found published on specified environment"
+          );
         return resolve();
       }
       setTimeout(async () => {
-        await getSyncEntries(stack, config, locale, queryParams, bulkUnpublish, environment, deliveryToken, null);
+        await getSyncEntries(
+          stack,
+          config,
+          locale,
+          queryParams,
+          bulkUnpublish,
+          environment,
+          deliveryToken,
+          null
+        );
       }, 3000);
     } catch (error) {
       reject(error);
@@ -201,34 +240,52 @@ async function getSyncEntries(
 }
 
 async function start(
-  { retryFailed, bulkUnpublish, contentType, locale, environment, deliveryToken, onlyAssets, onlyEntries, f_types },
+  {
+    retryFailed,
+    bulkUnpublish,
+    contentType,
+    locale,
+    environment,
+    deliveryToken,
+    onlyAssets,
+    onlyEntries,
+    f_types,
+  },
   stack,
-  config,
+  config
 ) {
-  process.on('beforeExit', async () => {
+  process.on("beforeExit", async () => {
     const isErrorLogEmpty = await isEmpty(`${filePath}.error`);
     const isSuccessLogEmpty = await isEmpty(`${filePath}.success`);
     if (!isErrorLogEmpty) {
-      console.log(`The error log for this session is stored at ${filePath}.error`);
+      console.log(
+        `The error log for this session is stored at ${filePath}.error`
+      );
     } else if (!isSuccessLogEmpty) {
-      console.log(`The success log for this session is stored at ${filePath}.success`);
+      console.log(
+        `The success log for this session is stored at ${filePath}.success`
+      );
     }
     process.exit(0);
   });
 
   if (retryFailed) {
-    if (typeof retryFailed === 'string' && retryFailed.length > 0) {
-      if (!validateFile(retryFailed, ['unpublish', 'bulk-unpublish'])) {
+    if (typeof retryFailed === "string" && retryFailed.length > 0) {
+      if (!validateFile(retryFailed, ["unpublish", "bulk-unpublish"])) {
         return false;
       }
 
-      bulkUnpublish = retryFailed.match(new RegExp('bulk')) ? true : false;
+      bulkUnpublish = retryFailed.match(new RegExp("bulk")) ? true : false;
       setConfig(config, bulkUnpublish);
 
       if (bulkUnpublish) {
-        await retryFailedLogs(retryFailed, queue, 'bulk');
+        await retryFailedLogs(retryFailed, queue, "bulk");
       } else {
-        await retryFailedLogs(retryFailed, { entryQueue, assetQueue }, 'publish');
+        await retryFailedLogs(
+          retryFailed,
+          { entryQueue, assetQueue },
+          "publish"
+        );
       }
     }
   } else {
@@ -242,18 +299,26 @@ async function start(
     // filter.type = (f_types) ? f_types : types // types mentioned in the config file (f_types) are given preference
     if (contentType) {
       filter.content_type_uid = contentType;
-      filter.type = 'entry_published';
+      filter.type = "entry_published";
     }
     if (onlyAssets) {
-      filter.type = 'asset_published';
+      filter.type = "asset_published";
       delete filter.content_type_uid;
     }
     if (onlyEntries) {
-      filter.type = 'entry_published';
+      filter.type = "entry_published";
     }
     setConfig(config, bulkUnpublish);
     const queryParams = getQueryParams(filter);
-    await getSyncEntries(stack, config, locale, queryParams, bulkUnpublish, environment, deliveryToken);
+    await getSyncEntries(
+      stack,
+      config,
+      locale,
+      queryParams,
+      bulkUnpublish,
+      environment,
+      deliveryToken
+    );
   }
 }
 

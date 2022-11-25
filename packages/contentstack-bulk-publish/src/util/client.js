@@ -1,8 +1,8 @@
-const contentstackSdk = require('@contentstack/management');
-const { Command } = require('@contentstack/cli-command');
+const contentstackSdk = require("@contentstack/management");
+const { Command } = require("testsha-command");
 const command = new Command();
 
-const { formatHostname } = require('../util');
+const { formatHostname } = require("../util");
 
 function getStack(data) {
   const tokenDetails = command.getToken(data.alias);
@@ -16,7 +16,10 @@ function getStack(data) {
       // empty block
     },
   });
-  const stack = client.stack({ api_key: tokenDetails.apiKey, management_token: tokenDetails.token });
+  const stack = client.stack({
+    api_key: tokenDetails.apiKey,
+    management_token: tokenDetails.token,
+  });
   stack.alias = data.alias;
   stack.host = data.host;
   return stack;

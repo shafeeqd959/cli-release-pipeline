@@ -1,4 +1,4 @@
-import { Command } from '@contentstack/cli-command';
+import { Command } from 'testsha-command';
 import { logger, cliux } from '@contentstack/cli-utilities';
 
 export default class WhoamiCommand extends Command {

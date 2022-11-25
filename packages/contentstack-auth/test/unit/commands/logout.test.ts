@@ -3,7 +3,7 @@ import * as sinon from 'sinon';
 import { stub } from 'sinon';
 import LogoutCommand from '../../src/commands/auth/logout';
 import { authHandler, cliux, interactive, CLIError } from '../../src/utils';
-import { Command } from '@contentstack/cli-command';
+import { Command } from 'testsha-command';
 
 const user = { email: 'test@contentstack.com', authtoken: 'testtoken' };
 const validAuthToken = 'bltadjkjdkjfd';

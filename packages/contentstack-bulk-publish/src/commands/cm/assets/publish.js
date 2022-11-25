@@ -1,27 +1,33 @@
-const { Command, flags } = require('@contentstack/cli-command');
-const { start: startPublish } = require('../../../producer/publish-assets');
-const { start: startCrossPublish } = require('../../../producer/cross-publish');
-const store = require('../../../util/store.js');
-const { cliux } = require('@contentstack/cli-utilities');
-const { prettyPrint, formatError } = require('../../../util');
-const { getStack } = require('../../../util/client.js');
-const { printFlagDeprecation } = require('@contentstack/cli-utilities');
+const { Command, flags } = require("testsha-command");
+const { start: startPublish } = require("../../../producer/publish-assets");
+const { start: startCrossPublish } = require("../../../producer/cross-publish");
+const store = require("../../../util/store.js");
+const { cliux } = require("@contentstack/cli-utilities");
+const { prettyPrint, formatError } = require("../../../util");
+const { getStack } = require("../../../util/client.js");
+const { printFlagDeprecation } = require("@contentstack/cli-utilities");
 let config;
 
 class AssetsPublishCommand extends Command {
   async run() {
     const assetsFlags = this.parse(AssetsPublishCommand).flags;
-    assetsFlags.retryFailed = assetsFlags['retry-failed'] || assetsFlags.retryFailed || false;
-    assetsFlags.folderUid = assetsFlags['folder-uid'] || assetsFlags.folderUid;
-    assetsFlags.bulkPublish = assetsFlags['bulk-publish'] || assetsFlags.bulkPublish;
-    delete assetsFlags['retry-failed'];
-    delete assetsFlags['folder-uid'];
-    delete assetsFlags['bulk-publish'];
+    assetsFlags.retryFailed =
+      assetsFlags["retry-failed"] || assetsFlags.retryFailed || false;
+    assetsFlags.folderUid = assetsFlags["folder-uid"] || assetsFlags.folderUid;
+    assetsFlags.bulkPublish =
+      assetsFlags["bulk-publish"] || assetsFlags.bulkPublish;
+    delete assetsFlags["retry-failed"];
+    delete assetsFlags["folder-uid"];
+    delete assetsFlags["bulk-publish"];
 
     let updatedFlags;
     try {
-      const storeConfigKeyName = assetsFlags['source-env'] ? 'cross_env_publish' : 'publish_assets';
-      updatedFlags = assetsFlags.config ? store.updateMissing(storeConfigKeyName, assetsFlags) : assetsFlags;
+      const storeConfigKeyName = assetsFlags["source-env"]
+        ? "cross_env_publish"
+        : "publish_assets";
+      updatedFlags = assetsFlags.config
+        ? store.updateMissing(storeConfigKeyName, assetsFlags)
+        : assetsFlags;
     } catch (error) {
       this.error(error.message, { exit: 2 });
     }
@@ -29,12 +35,15 @@ class AssetsPublishCommand extends Command {
       let stack;
       if (!updatedFlags.retryFailed) {
         if (!updatedFlags.alias) {
-          updatedFlags.alias = await cliux.prompt('Please enter the management token alias to be used');
+          updatedFlags.alias = await cliux.prompt(
+            "Please enter the management token alias to be used"
+          );
         }
-        updatedFlags.bulkPublish = updatedFlags.bulkPublish === 'false' ? false : true;
+        updatedFlags.bulkPublish =
+          updatedFlags.bulkPublish === "false" ? false : true;
         if (updatedFlags.folderUid === undefined) {
           // set default value for folderUid
-          updatedFlags.folderUid = 'cs_root';
+          updatedFlags.folderUid = "cs_root";
         }
         // Validate management token alias.
         try {
@@ -42,7 +51,7 @@ class AssetsPublishCommand extends Command {
         } catch (error) {
           this.error(
             `The configured management token alias ${updatedFlags.alias} has not been added yet. Add it using 'csdx auth:tokens:add -a ${updatedFlags.alias}'`,
-            { exit: 2 },
+            { exit: 2 }
           );
         }
         config = {
@@ -73,10 +82,10 @@ class AssetsPublishCommand extends Command {
             }
           };
 
-          if (updatedFlags['source-env']) {
-            updatedFlags.deliveryToken = updatedFlags['delivery-token'];
+          if (updatedFlags["source-env"]) {
+            updatedFlags.deliveryToken = updatedFlags["delivery-token"];
             updatedFlags.destEnv = updatedFlags.environments;
-            updatedFlags.environment = updatedFlags['source-env'];
+            updatedFlags.environment = updatedFlags["source-env"];
             updatedFlags.onlyAssets = true;
             if (updatedFlags.locales instanceof Array) {
               updatedFlags.locales.forEach((locale) => {
@@ -95,35 +104,46 @@ class AssetsPublishCommand extends Command {
           this.error(message, { exit: 2 });
         }
       } else {
-        this.error('Confirmation failed');
+        this.error("Confirmation failed");
       }
     } else {
-      this.error('Validation failed');
+      this.error("Validation failed");
     }
   }
 
-  validate({ environments, retryFailed, locales, 'source-env': sourceEnv, 'delivery-token': deliveryToken }) {
+  validate({
+    environments,
+    retryFailed,
+    locales,
+    "source-env": sourceEnv,
+    "delivery-token": deliveryToken,
+  }) {
     let missing = [];
     if (retryFailed) {
       return true;
     }
 
     if (sourceEnv && !deliveryToken) {
-      this.error('Specify source environment delivery token. Please check --help for more details', { exit: 2 });
+      this.error(
+        "Specify source environment delivery token. Please check --help for more details",
+        { exit: 2 }
+      );
     }
 
     if (!environments || environments.length === 0) {
-      missing.push('Environments');
+      missing.push("Environments");
     }
 
     if (!locales || locales.length === 0) {
-      missing.push('Locales');
+      missing.push("Locales");
     }
 
     if (missing.length > 0) {
       this.error(
-        `${missing.join(', ')} are required for processing this command. Please check --help for more details`,
-        { exit: 2 },
+        `${missing.join(
+          ", "
+        )} are required for processing this command. Please check --help for more details`,
+        { exit: 2 }
       );
     } else {
       return true;
@@ -135,7 +155,9 @@ class AssetsPublishCommand extends Command {
     if (data.yes) {
       return true;
     }
-    return cliux.confirm('Do you want to continue with this configuration ? [yes or no]');
+    return cliux.confirm(
+      "Do you want to continue with this configuration ? [yes or no]"
+    );
   }
 }
 
@@ -148,96 +170,107 @@ But, if retryFailed flag is set, then only a logfile is required
 
 AssetsPublishCommand.flags = {
   alias: flags.string({
-    char: 'a',
-    description: 'Alias(name) for the management token',
+    char: "a",
+    description: "Alias(name) for the management token",
   }),
-  'retry-failed': flags.string({
-    description: 'Retry publishing failed assets from the logfile (optional, will override all other flags)',
+  "retry-failed": flags.string({
+    description:
+      "Retry publishing failed assets from the logfile (optional, will override all other flags)",
   }),
   environments: flags.string({
-    char: 'e',
-    description: 'Environments where assets will be published',
+    char: "e",
+    description: "Environments where assets will be published",
     multiple: true,
   }),
-  'folder-uid': flags.string({
-    description: '[default: cs_root] Folder-uid from where the assets will be published',
-    exclusive: ['source-env'],
+  "folder-uid": flags.string({
+    description:
+      "[default: cs_root] Folder-uid from where the assets will be published",
+    exclusive: ["source-env"],
   }),
-  'bulk-publish': flags.string({
+  "bulk-publish": flags.string({
     description:
       "By default this flag is set as true. It indicates that contentstack's bulkpublish API will be used to publish the assets",
-    default: 'true',
+    default: "true",
   }),
   config: flags.string({
-    char: 'c',
-    description: 'Path to the config file',
+    char: "c",
+    description: "Path to the config file",
   }),
   yes: flags.boolean({
-    char: 'y',
-    description: 'Agree to process the command with the current configuration',
+    char: "y",
+    description: "Agree to process the command with the current configuration",
   }),
   locales: flags.string({
-    char: 'l',
-    description: 'Locales to where assets will be published',
+    char: "l",
+    description: "Locales to where assets will be published",
     multiple: true,
-    parse: printFlagDeprecation(['-l'], ['--locales']),
+    parse: printFlagDeprecation(["-l"], ["--locales"]),
   }),
   branch: flags.string({
-    char: 'B',
-    default: 'main',
-    description: 'Specify the branch to fetch the content (by default the main branch is selected)',
-    parse: printFlagDeprecation(['-B'], ['--branch']),
+    char: "B",
+    default: "main",
+    description:
+      "Specify the branch to fetch the content (by default the main branch is selected)",
+    parse: printFlagDeprecation(["-B"], ["--branch"]),
   }),
 
   // To be deprecated
   retryFailed: flags.string({
-    char: 'r',
-    description: 'Retry publishing failed assets from the logfile (optional, will override all other flags)',
+    char: "r",
+    description:
+      "Retry publishing failed assets from the logfile (optional, will override all other flags)",
     hidden: true,
-    parse: printFlagDeprecation(['-r', '--retryFailed'], ['--retry-failed']),
+    parse: printFlagDeprecation(["-r", "--retryFailed"], ["--retry-failed"]),
   }),
   folderUid: flags.string({
-    char: 'u',
-    description: '[default: cs_root] Folder-uid from where the assets will be published',
+    char: "u",
+    description:
+      "[default: cs_root] Folder-uid from where the assets will be published",
     hidden: true,
-    parse: printFlagDeprecation(['-u', '--folderUid'], ['--folder-uid']),
-    exclusive: ['source-env'],
+    parse: printFlagDeprecation(["-u", "--folderUid"], ["--folder-uid"]),
+    exclusive: ["source-env"],
   }),
   bulkPublish: flags.string({
-    char: 'b',
+    char: "b",
     description:
       "By default this flag is set as true. It indicates that contentstack's bulkpublish API will be used to publish the entries",
-    default: 'true',
+    default: "true",
     hidden: true,
-    parse: printFlagDeprecation(['-b', '--bulkPublish'], ['--bulk-publish']),
+    parse: printFlagDeprecation(["-b", "--bulkPublish"], ["--bulk-publish"]),
   }),
-  'delivery-token': flags.string({ description: 'Delivery token for source environment' }),
-  'source-env': flags.string({ description: 'Source environment' }),
-  'content-types': flags.string({ description: 'Content types', hidden: true, multiple: true }), // this is a work around, as this command is to be run with entries:publish command and should not break flags check.
+  "delivery-token": flags.string({
+    description: "Delivery token for source environment",
+  }),
+  "source-env": flags.string({ description: "Source environment" }),
+  "content-types": flags.string({
+    description: "Content types",
+    hidden: true,
+    multiple: true,
+  }), // this is a work around, as this command is to be run with entries:publish command and should not break flags check.
 };
 
 AssetsPublishCommand.examples = [
-  'General Usage',
-  'csdx cm:assets:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS]',
-  '',
-  'Using --config or -c flag',
-  'Generate a config file at the current working directory using `csdx cm:stacks:publish-configure -a [ALIAS]`',
-  'csdx cm:assets:publish --config [PATH TO CONFIG FILE]',
-  'csdx cm:assets:publish -c [PATH TO CONFIG FILE]',
-  '',
-  'Using --retry-failed flag',
-  'csdx cm:assets:publish --retry-failed [LOG FILE NAME]',
-  '',
-  'Using --branch flag',
-  'csdx cm:assets:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --branch [BRANCH NAME]',
-  '',
-  'Using --source-env',
-  'csdx cm:assets:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --source-env [SOURCE ENVIRONMENT] --delivery-token [DELIVERY TOKEN]',
+  "General Usage",
+  "csdx cm:assets:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS]",
+  "",
+  "Using --config or -c flag",
+  "Generate a config file at the current working directory using `csdx cm:stacks:publish-configure -a [ALIAS]`",
+  "csdx cm:assets:publish --config [PATH TO CONFIG FILE]",
+  "csdx cm:assets:publish -c [PATH TO CONFIG FILE]",
+  "",
+  "Using --retry-failed flag",
+  "csdx cm:assets:publish --retry-failed [LOG FILE NAME]",
+  "",
+  "Using --branch flag",
+  "csdx cm:assets:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --branch [BRANCH NAME]",
+  "",
+  "Using --source-env",
+  "csdx cm:assets:publish --environments [ENVIRONMENT 1] [ENVIRONMENT 2] --locales [LOCALE] --alias [MANAGEMENT TOKEN ALIAS] --source-env [SOURCE ENVIRONMENT] --delivery-token [DELIVERY TOKEN]",
 ];
 
-AssetsPublishCommand.aliases = ['cm:bulk-publish:assets'];
+AssetsPublishCommand.aliases = ["cm:bulk-publish:assets"];
 
 AssetsPublishCommand.usage =
-  'cm:assets:publish [-a <value>] [--retry-failed <value>] [-e <value>] [--folder-uid <value>] [--bulk-publish <value>] [-c <value>] [-y] [--locales <value>] [--branch <value>] [--delivery-token <value>] [--source-env <value>]';
+  "cm:assets:publish [-a <value>] [--retry-failed <value>] [-e <value>] [--folder-uid <value>] [--bulk-publish <value>] [-c <value>] [-y] [--locales <value>] [--branch <value>] [--delivery-token <value>] [--source-env <value>]";
 
 module.exports = AssetsPublishCommand;
