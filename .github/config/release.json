@@ -1,7 +1,7 @@
 {
     "releaseAll": true,
     "plugins": {
-        "utilities": true,
+        "utilities": false,
         "command": false,
         "config": false,
         "auth": false,

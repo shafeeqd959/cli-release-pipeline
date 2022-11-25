@@ -71,7 +71,6 @@
     "type": "git",
     "url": ""
   },
-  ,
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "oclif-dev manifest && oclif-dev readme",
