@@ -1,4 +1,4 @@
-import { cliux, logger, CLIError } from '@contentstack/cli-utilities';
+import { cliux, logger, CLIError } from 'testsha-utilities';
 
 import { User } from '../interfaces';
 import { askOTPChannel, askOTP } from './interactive';

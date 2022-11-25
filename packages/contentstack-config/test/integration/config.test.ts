@@ -2,7 +2,7 @@ import * as path from "path";
 import { expect, test } from "@oclif/test";
 // @ts-ignore
 import { Helper } from "./utils";
-import { cliux, messageHandler } from "@contentstack/cli-utilities";
+import { cliux, messageHandler } from "testsha-utilities";
 // @ts-ignore
 import { PRINT_LOGS, CDA, CMA, REGION_NAME } from "./config.json";
 
@@ -23,19 +23,22 @@ describe("ContentStack-Config plugin test", () => {
     messageHandler.init({ messageFilePath: "" });
   });
 
-  describe('Running config:set:region command without any flags and set AZURE-NA as Region', () => {
+  describe("Running config:set:region command without any flags and set AZURE-NA as Region", () => {
     test
-      .stub(cliux, 'inquire', async () => 'AZURE-NA')
+      .stub(cliux, "inquire", async () => "AZURE-NA")
       .stdout({ print: PRINT_LOGS || false })
-      .command(['config:set:region'])
-      .it('Check config:set:region command output [It should set AZURE-NA as region]', (ctx) => {
-        expect(ctx.stdout)
-          .to.be.a('string')
-          .that.have.includes(
-            'Region has been set to AZURE-NA\nCDA HOST: https://azure-na-cdn.contentstack.com\nCMA HOST: https://azure-na-api.contentstack.com\n',
-            'AZURE-NA region is not setup.!',
-          );
-      });
+      .command(["config:set:region"])
+      .it(
+        "Check config:set:region command output [It should set AZURE-NA as region]",
+        (ctx) => {
+          expect(ctx.stdout)
+            .to.be.a("string")
+            .that.have.includes(
+              "Region has been set to AZURE-NA\nCDA HOST: https://azure-na-cdn.contentstack.com\nCMA HOST: https://azure-na-api.contentstack.com\n",
+              "AZURE-NA region is not setup.!"
+            );
+        }
+      );
   });
 
   describe("Running config:set:region command with arg as NA region", () => {

@@ -1,7 +1,7 @@
-import * as process from 'process';
-import * as path from 'path';
+import * as process from "process";
+import * as path from "path";
 
-const STACK_FOLDER = 'stack';
+const STACK_FOLDER = "stack";
 
 export interface ImporterOptions {
   master_locale: string;
@@ -18,7 +18,17 @@ export async function run(options: ImporterOptions) {
   process.chdir(options.tmpPath);
 
   // moving here to fix jest testing bug
-  const { parametersWithAuthToken } = require('@contentstack/cli-cm-import/src/lib/util/import-flags');
+  const {
+    parametersWithAuthToken,
+  } = require("testsha-cm-import/src/lib/util/import-flags");
 
-  await parametersWithAuthToken(options.authToken, options.api_key, importPath, '', options.cmaHost, '', {});
+  await parametersWithAuthToken(
+    options.authToken,
+    options.api_key,
+    importPath,
+    "",
+    options.cmaHost,
+    "",
+    {}
+  );
 }

@@ -1,4 +1,4 @@
-import { logger, messageHandler, cliux } from '@contentstack/cli-utilities';
+import { logger, messageHandler, cliux } from 'testsha-utilities';
 
 /**
  * Initialize the utilities

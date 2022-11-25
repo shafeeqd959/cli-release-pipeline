@@ -3,15 +3,23 @@
  * Copyright (c) 2019 Contentstack LLC
  * MIT Licensed
  */
-let defaultConfig = require('../../config/default');
-let message = require('../../../messages/index.json');
-let { initial } = require('../../app');
-let path = require('path');
-const helper = require('../util/helper');
-let _ = require('lodash');
-const { cliux } = require('@contentstack/cli-utilities');
+let defaultConfig = require("../../config/default");
+let message = require("../../../messages/index.json");
+let { initial } = require("../../app");
+let path = require("path");
+const helper = require("../util/helper");
+let _ = require("lodash");
+const { cliux } = require("testsha-utilities");
 
-exports.configWithMToken = async function (config, managementTokens, host, contentTypes, branchName, securedAssets, moduleName) {
+exports.configWithMToken = async function (
+  config,
+  managementTokens,
+  host,
+  contentTypes,
+  branchName,
+  securedAssets,
+  moduleName
+) {
   let externalConfig = require(config);
   defaultConfig.securedAssets = securedAssets;
   defaultConfig.management_token = managementTokens.token;
@@ -22,7 +30,11 @@ exports.configWithMToken = async function (config, managementTokens, host, conte
   if (moduleName) {
     defaultConfig.moduleName = moduleName;
     // Specfic content type setting is only for entries module
-    if (moduleName === 'entries' && Array.isArray(contentTypes) && contentTypes.length > 0) {
+    if (
+      moduleName === "entries" &&
+      Array.isArray(contentTypes) &&
+      contentTypes.length > 0
+    ) {
       defaultConfig.contentTypes = contentTypes;
     }
   }
@@ -38,7 +50,7 @@ exports.parameterWithMToken = async function (
   _authToken,
   contentTypes,
   branchName,
-  securedAssets,
+  securedAssets
 ) {
   defaultConfig.management_token = managementTokens.token;
   defaultConfig.auth_token = _authToken;
@@ -51,7 +63,11 @@ exports.parameterWithMToken = async function (
   } else {
     defaultConfig.moduleName = moduleName;
     // Specfic content type setting is only for entries module
-    if (moduleName === 'entries' && Array.isArray(contentTypes) && contentTypes.length > 0) {
+    if (
+      moduleName === "entries" &&
+      Array.isArray(contentTypes) &&
+      contentTypes.length > 0
+    ) {
       defaultConfig.contentTypes = contentTypes;
     }
   }
@@ -68,10 +84,12 @@ exports.withoutParameterMToken = async (
   _authToken,
   contentTypes,
   branchName,
-  securedAssets,
+  securedAssets
 ) => {
   const stackUid = managementTokens.apiKey;
-  const pathOfExport = await cliux.prompt(message.promptMessageList.promptPathStoredData);
+  const pathOfExport = await cliux.prompt(
+    message.promptMessageList.promptPathStoredData
+  );
   defaultConfig.management_token = managementTokens.token;
   defaultConfig.host = host.cma;
   defaultConfig.cdn = host.cda;
@@ -81,7 +99,11 @@ exports.withoutParameterMToken = async (
   if (moduleName) {
     defaultConfig.moduleName = moduleName;
     // Specfic content type setting is only for entries module
-    if (moduleName === 'entries' && Array.isArray(contentTypes) && contentTypes.length > 0) {
+    if (
+      moduleName === "entries" &&
+      Array.isArray(contentTypes) &&
+      contentTypes.length > 0
+    ) {
       defaultConfig.contentTypes = contentTypes;
     }
   }
@@ -90,7 +112,15 @@ exports.withoutParameterMToken = async (
   await initial(defaultConfig);
 };
 
-exports.configWithAuthToken = async function (config, _authToken, moduleName, host, contentTypes, branchName, securedAssets) {
+exports.configWithAuthToken = async function (
+  config,
+  _authToken,
+  moduleName,
+  host,
+  contentTypes,
+  branchName,
+  securedAssets
+) {
   let externalConfig = helper.readFile(path.resolve(config));
   defaultConfig.auth_token = _authToken;
   defaultConfig.host = host.cma;
@@ -100,7 +130,11 @@ exports.configWithAuthToken = async function (config, _authToken, moduleName, ho
   if (moduleName) {
     defaultConfig.moduleName = moduleName;
     // Specfic content type setting is only for entries module
-    if (moduleName === 'entries' && Array.isArray(contentTypes) && contentTypes.length > 0) {
+    if (
+      moduleName === "entries" &&
+      Array.isArray(contentTypes) &&
+      contentTypes.length > 0
+    ) {
       defaultConfig.contentTypes = contentTypes;
     }
   }
@@ -116,7 +150,7 @@ exports.parametersWithAuthToken = function (
   host,
   contentTypes,
   branchName,
-  securedAssets,
+  securedAssets
 ) {
   return new Promise(async (resolve, reject) => {
     defaultConfig.auth_token = _authToken;
@@ -124,7 +158,11 @@ exports.parametersWithAuthToken = function (
     if (moduleName) {
       defaultConfig.moduleName = moduleName;
       // Specfic content type setting is only for entries module
-      if (moduleName === 'entries' && Array.isArray(contentTypes) && contentTypes.length > 0) {
+      if (
+        moduleName === "entries" &&
+        Array.isArray(contentTypes) &&
+        contentTypes.length > 0
+      ) {
         defaultConfig.contentTypes = contentTypes;
       }
     }
@@ -149,17 +187,25 @@ exports.withoutParametersWithAuthToken = async (
   host,
   contentTypes,
   branchName,
-  securedAssets,
+  securedAssets
 ) => {
-  const stackUid = await cliux.prompt(message.promptMessageList.promptSourceStack);
-  const pathOfExport = await cliux.prompt(message.promptMessageList.promptPathStoredData);
+  const stackUid = await cliux.prompt(
+    message.promptMessageList.promptSourceStack
+  );
+  const pathOfExport = await cliux.prompt(
+    message.promptMessageList.promptPathStoredData
+  );
   defaultConfig.auth_token = _authToken;
   defaultConfig.source_stack = stackUid;
   defaultConfig.securedAssets = securedAssets;
   if (moduleName) {
     defaultConfig.moduleName = moduleName;
     // Specfic content type setting is only for entries module
-    if (moduleName === 'entries' && Array.isArray(contentTypes) && contentTypes.length > 0) {
+    if (
+      moduleName === "entries" &&
+      Array.isArray(contentTypes) &&
+      contentTypes.length > 0
+    ) {
       defaultConfig.contentTypes = contentTypes;
     }
   }

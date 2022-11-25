@@ -1,5 +1,5 @@
 const { Command, flags } = require("testsha-command");
-const { cliux, printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { cliux, printFlagDeprecation } = require("testsha-utilities");
 
 const store = require("../../../util/store.js");
 const { start } = require("../../../producer/revert");

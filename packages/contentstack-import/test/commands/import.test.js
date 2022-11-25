@@ -1,19 +1,19 @@
-const { expect, test, it } = require('@oclif/test');
-const { cliux } = require('@contentstack/cli-utilities');
-const { Client } = require('../../src/lib/util/contentstack-management-sdk');
-let defaultConfig = require('../../src/config/default');
-let _ = require('lodash');
-var environmentsMock = require('../mock/environment');
-var extensionsMock = require('../mock/extensions');
-var localeMock = require('../mock/locales');
-var globalFieldsMock = require('../mock/globalFields');
-var webhooksMock = require('../mock/webhook');
-var assetsMock = require('../mock/assets');
-var assetFetchMock = require('../mock/assetFetch');
-var entriesMock = require('../mock/entries');
-var entriesFetchMock = require('../mock/entryFetch');
-var contentTypeMock = require('../mock/content-types');
-let message = require('../../messages/index.json');
+const { expect, test, it } = require("@oclif/test");
+const { cliux } = require("testsha-utilities");
+const { Client } = require("../../src/lib/util/contentstack-management-sdk");
+let defaultConfig = require("../../src/config/default");
+let _ = require("lodash");
+var environmentsMock = require("../mock/environment");
+var extensionsMock = require("../mock/extensions");
+var localeMock = require("../mock/locales");
+var globalFieldsMock = require("../mock/globalFields");
+var webhooksMock = require("../mock/webhook");
+var assetsMock = require("../mock/assets");
+var assetFetchMock = require("../mock/assetFetch");
+var entriesMock = require("../mock/entries");
+var entriesFetchMock = require("../mock/entryFetch");
+var contentTypeMock = require("../mock/content-types");
+let message = require("../../messages/index.json");
 
 let client = Client(defaultConfig);
 // console.log("Line no 20+++++", client);
@@ -121,32 +121,36 @@ let client = Client(defaultConfig);
 // 	})
 
 test
-  .stub(require('../../src/lib/util/contentstack-management-sdk'), 'Client', (e) => {
-    return {
-      stack: function () {
-        return {
-          locale: function () {
-            return {
-              create: function () {
-                return new Promise.resolve('ncjkdncjdncjd');
-              },
-            };
-          },
-        };
-      },
-      users: function () {
-        return new Promise.resolve();
-      },
-    };
+  .stub(
+    require("../../src/lib/util/contentstack-management-sdk"),
+    "Client",
+    (e) => {
+      return {
+        stack: function () {
+          return {
+            locale: function () {
+              return {
+                create: function () {
+                  return new Promise.resolve("ncjkdncjdncjd");
+                },
+              };
+            },
+          };
+        },
+        users: function () {
+          return new Promise.resolve();
+        },
+      };
+    }
+  )
+  .stub(cliux, "prompt", (_name) => async (name) => {
+    if (name === "Please provide master locale ?") return "en-us";
+    if (name === "Please provide target Stack") return "newstackUid";
+    if (name === "Please provide path were you have stored the data")
+      return "/home/rohit/Import-Export-script/contentstack-export/SYNcontents/";
   })
-  .stub(cliux, 'prompt', (_name) => async (name) => {
-    if (name === 'Please provide master locale ?') return 'en-us';
-    if (name === 'Please provide target Stack') return 'newstackUid';
-    if (name === 'Please provide path were you have stored the data')
-      return '/home/rohit/Import-Export-script/contentstack-export/SYNcontents/';
-  })
-  .command(['cm:import', '--auth-token', '-m', 'locales'])
-  .it('runs method of Locales', (ctx) => {});
+  .command(["cm:import", "--auth-token", "-m", "locales"])
+  .it("runs method of Locales", (ctx) => {});
 
 // test
 // .stub(require('../../src/lib/util/contentstack-management-sdk'), 'Client', (e) => {

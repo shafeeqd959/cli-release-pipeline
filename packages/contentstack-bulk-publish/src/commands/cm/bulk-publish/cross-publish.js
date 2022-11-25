@@ -1,6 +1,6 @@
 /* eslint-disable node/no-extraneous-require */
 const { Command, flags } = require("testsha-command");
-const { cliux, printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { cliux, printFlagDeprecation } = require("testsha-utilities");
 const { start } = require("../../../producer/cross-publish");
 const store = require("../../../util/store.js");
 const configKey = "cross_env_publish";

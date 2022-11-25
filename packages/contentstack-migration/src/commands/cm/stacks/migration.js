@@ -12,8 +12,8 @@ const { Parser } = require("../../../modules");
 const { ActionList } = require("../../../actions");
 const fs = require("fs");
 const chalk = require("chalk");
-const { configHandler } = require("@contentstack/cli-utilities");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { configHandler } = require("testsha-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 
 const {
   ApiError,

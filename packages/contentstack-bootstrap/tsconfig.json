@@ -11,6 +11,6 @@
   },
   "include": [
     "src/**/*",
-    "src/typings/@contentstack/cli-utilities.ts",
+    "src/typings/testsha-utilities.ts",
   ]
 }

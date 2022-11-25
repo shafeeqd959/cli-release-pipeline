@@ -1,24 +1,26 @@
-const inquirer = require('inquirer');
-const { HttpClient } = require('@contentstack/cli-utilities');
-const os = require('os');
-const checkboxPlus = require('inquirer-checkbox-plus-prompt');
-const config = require('./config.js');
-const fastcsv = require('fast-csv');
-const mkdirp = require('mkdirp');
-const fs = require('fs');
-const debug = require('debug')('export-to-csv');
-const directory = './data';
-const delimeter = os.platform() === 'win32' ? '\\' : '/';
+const inquirer = require("inquirer");
+const { HttpClient } = require("testsha-utilities");
+const os = require("os");
+const checkboxPlus = require("inquirer-checkbox-plus-prompt");
+const config = require("./config.js");
+const fastcsv = require("fast-csv");
+const mkdirp = require("mkdirp");
+const fs = require("fs");
+const debug = require("debug")("export-to-csv");
+const directory = "./data";
+const delimeter = os.platform() === "win32" ? "\\" : "/";
 
 // Register checkbox-plus here.
-inquirer.registerPrompt('checkbox-plus', checkboxPlus);
+inquirer.registerPrompt("checkbox-plus", checkboxPlus);
 
 function chooseOrganization(managementAPIClient, action) {
   return new Promise(async (resolve, reject) => {
     try {
       let organizations;
       if (action === config.exportUsers) {
-        organizations = await getOrganizationsWhereUserIsAdmin(managementAPIClient);
+        organizations = await getOrganizationsWhereUserIsAdmin(
+          managementAPIClient
+        );
       } else {
         organizations = await getOrganizations(managementAPIClient);
       }
@@ -26,9 +28,9 @@ function chooseOrganization(managementAPIClient, action) {
       orgList.push(config.cancelString);
       let _chooseOrganization = [
         {
-          type: 'list',
-          name: 'chosenOrg',
-          message: 'Choose an Organization',
+          type: "list",
+          name: "chosenOrg",
+          message: "Choose an Organization",
           choices: orgList,
           loop: false,
         },
@@ -91,9 +93,9 @@ function chooseStack(managementAPIClient, orgUid) {
 
       let _chooseStack = [
         {
-          type: 'list',
-          name: 'chosenStack',
-          message: 'Choose a Stack',
+          type: "list",
+          name: "chosenStack",
+          message: "Choose a Stack",
           choices: stackList,
         },
       ];
@@ -138,10 +140,10 @@ function chooseContentType(stack, skip) {
 
     let _chooseContentType = [
       {
-        type: 'checkbox',
-        message: 'Choose Content Type',
+        type: "checkbox",
+        message: "Choose Content Type",
         choices: contentTypesList,
-        name: 'chosenContentTypes',
+        name: "chosenContentTypes",
         loop: false,
       },
     ];
@@ -156,22 +158,24 @@ function chooseInMemContentTypes(contentTypesList) {
   return new Promise(async (resolve, reject) => {
     let _chooseContentType = [
       {
-        type: 'checkbox-plus',
-        message: 'Choose Content Type',
+        type: "checkbox-plus",
+        message: "Choose Content Type",
         choices: contentTypesList,
-        name: 'chosenContentTypes',
+        name: "chosenContentTypes",
         loop: false,
         highlight: true,
         searchable: true,
         source: (_, input) => {
-          input = input || '';
-          const inputArray = input.split(' ');
+          input = input || "";
+          const inputArray = input.split(" ");
           return new Promise((resolveSource) => {
             const contentTypes = contentTypesList.filter((contentType) => {
               let shouldInclude = true;
               inputArray.forEach((inputChunk) => {
                 // if any term to filter by doesn't exist, exclude
-                if (!contentType.toLowerCase().includes(inputChunk.toLowerCase())) {
+                if (
+                  !contentType.toLowerCase().includes(inputChunk.toLowerCase())
+                ) {
                   shouldInclude = false;
                 }
               });
@@ -184,7 +188,7 @@ function chooseInMemContentTypes(contentTypesList) {
     ];
     inquirer.prompt(_chooseContentType).then(({ chosenContentTypes }) => {
       if (chosenContentTypes.length === 0) {
-        reject('Please select atleast one content type.');
+        reject("Please select atleast one content type.");
       }
       resolve(chosenContentTypes);
     });
@@ -216,10 +220,10 @@ function chooseLanguage(stack) {
 
     let _chooseLanguage = [
       {
-        type: 'list',
-        message: 'Choose Language',
+        type: "list",
+        message: "Choose Language",
         choices: languagesList,
-        name: 'chosenLanguage',
+        name: "chosenLanguage",
       },
     ];
 
@@ -252,7 +256,11 @@ function getEntries(stack, contentType, language, skip) {
     stack
       .contentType(contentType)
       .entry()
-      .query({ include_publish_details: true, locale: language, skip: skip * 100 })
+      .query({
+        include_publish_details: true,
+        locale: language,
+        skip: skip * 100,
+      })
       .find()
       .then((entries) => resolve(entries))
       .catch((error) => reject(error));
@@ -279,7 +287,7 @@ function getEnvironments(stack) {
     .find()
     .then((environments) => {
       environments.items.forEach((env) => {
-        result[env['uid']] = env['name'];
+        result[env["uid"]] = env["name"];
       });
       return result;
     });
@@ -299,32 +307,34 @@ function getContentTypeCount(stack) {
 }
 
 function exitProgram() {
-  debug('Exiting');
+  debug("Exiting");
   // eslint-disable-next-line no-undef
   process.exit();
 }
 
 function cleanEntries(entries, language, environments, contentTypeUid) {
   const filteredEntries = entries.filter((entry) => {
-    return entry['locale'] === language && entry.publish_details.length > 0;
+    return entry["locale"] === language && entry.publish_details.length > 0;
   });
 
   return filteredEntries.map((entry) => {
-    let workflow = '';
+    let workflow = "";
     const envArr = [];
     entry.publish_details.forEach((env) => {
-      envArr.push(JSON.stringify([environments[env['environment']], env['locale']]));
+      envArr.push(
+        JSON.stringify([environments[env["environment"]], env["locale"]])
+      );
     });
     delete entry.publish_details;
-    if ('_workflow' in entry) {
-      workflow = entry['_workflow']['name'];
-      delete entry['_workflow'];
+    if ("_workflow" in entry) {
+      workflow = entry["_workflow"]["name"];
+      delete entry["_workflow"];
     }
     entry = flatten(entry);
-    entry['publish_details'] = envArr;
-    entry['_workflow'] = workflow;
-    entry['ACL'] = JSON.stringify({}); // setting ACL to empty obj
-    entry['content_type_uid'] = contentTypeUid; // content_type_uid is being returned as 'uid' from the sdk for some reason
+    entry["publish_details"] = envArr;
+    entry["_workflow"] = workflow;
+    entry["ACL"] = JSON.stringify({}); // setting ACL to empty obj
+    entry["content_type_uid"] = contentTypeUid; // content_type_uid is being returned as 'uid' from the sdk for some reason
     // entry['url'] might also be wrong
     delete entry.stackHeaders;
     delete entry.update;
@@ -340,25 +350,30 @@ function cleanEntries(entries, language, environments, contentTypeUid) {
 
 function getDateTime() {
   let date = new Date();
-  let dateTime = date.toLocaleString().split(',');
-  dateTime[0] = dateTime[0].split('/').join('-');
+  let dateTime = date.toLocaleString().split(",");
+  dateTime[0] = dateTime[0].split("/").join("-");
   dateTime[1] = dateTime[1].trim(); // trim the space before time
-  dateTime[1] = dateTime[1].split(' ').join('');
-  return dateTime.join('_');
+  dateTime[1] = dateTime[1].split(" ").join("");
+  return dateTime.join("_");
 }
 
 function write(command, entries, fileName, message) {
   // eslint-disable-next-line no-undef
-  if (process.cwd().split(delimeter).pop() !== 'data' && !fs.existsSync(directory)) {
+  if (
+    process.cwd().split(delimeter).pop() !== "data" &&
+    !fs.existsSync(directory)
+  ) {
     mkdirp.sync(directory);
   }
   // eslint-disable-next-line no-undef
-  if (process.cwd().split(delimeter).pop() !== 'data') {
+  if (process.cwd().split(delimeter).pop() !== "data") {
     // eslint-disable-next-line no-undef
     process.chdir(directory);
   }
   // eslint-disable-next-line no-undef
-  command.log(`Writing ${message} to file: ${process.cwd()}${delimeter}${fileName}`);
+  command.log(
+    `Writing ${message} to file: ${process.cwd()}${delimeter}${fileName}`
+  );
   fastcsv.writeToPath(fileName, entries, { headers: true });
 }
 
@@ -366,14 +381,14 @@ function startupQuestions() {
   return new Promise((resolve) => {
     let actions = [
       {
-        type: 'list',
-        name: 'action',
-        message: 'Choose Action',
-        choices: [config.exportEntries, config.exportUsers, 'Exit'],
+        type: "list",
+        name: "action",
+        message: "Choose Action",
+        choices: [config.exportEntries, config.exportUsers, "Exit"],
       },
     ];
     inquirer.prompt(actions).then((answers) => {
-      if (answers.action === 'Exit') exitProgram();
+      if (answers.action === "Exit") exitProgram();
       resolve(answers.action);
     });
   });
@@ -384,7 +399,9 @@ function getOrgUsers(managementAPIClient, orgUid, ecsv) {
     managementAPIClient
       .getUser({ include_orgs_roles: true })
       .then((response) => {
-        let organization = response.organizations.filter((org) => org.uid === orgUid).pop();
+        let organization = response.organizations
+          .filter((org) => org.uid === orgUid)
+          .pop();
         if (organization.is_owner === true) {
           let cma = ecsv.region.cma;
           let authtoken = ecsv.authToken;
@@ -407,7 +424,7 @@ function getMappedUsers(users) {
   users.items.forEach((user) => {
     mappedUsers[user.user_uid] = user.email;
   });
-  mappedUsers['System'] = 'System';
+  mappedUsers["System"] = "System";
   return mappedUsers;
 }
 
@@ -424,12 +441,16 @@ function getOrgRoles(managementAPIClient, orgUid, ecsv) {
     managementAPIClient
       .getUser({ include_orgs_roles: true })
       .then((response) => {
-        let organization = response.organizations.filter((org) => org.uid === orgUid).pop();
+        let organization = response.organizations
+          .filter((org) => org.uid === orgUid)
+          .pop();
         if (organization.is_owner === true) {
           let cma = ecsv.region.cma;
           let authtoken = ecsv.authToken;
           return axios
-            .get(`${cma}/v3/organizations/${organization.uid}/roles`, { headers: { authtoken: authtoken } })
+            .get(`${cma}/v3/organizations/${organization.uid}/roles`, {
+              headers: { authtoken: authtoken },
+            })
             .then((_response) => resolve({ items: _response.data.roles }));
         }
         if (!organization.roles) {
@@ -442,14 +463,14 @@ function getOrgRoles(managementAPIClient, orgUid, ecsv) {
 }
 
 function determineUserOrgRole(user, roles) {
-  let roleName = 'No Role';
+  let roleName = "No Role";
   let roleUid = user.org_roles || [];
   if (roleUid.length > 0) {
     roleUid = roleUid.shift();
     roleName = roles[roleUid];
   }
   if (user.is_owner) {
-    roleName = 'Owner';
+    roleName = "Owner";
   }
   return roleName;
 }
@@ -460,17 +481,20 @@ function cleanOrgUsers(orgUsers, mappedUsers, mappedRoles) {
     let invitedBy;
     let formattedUser = {};
     try {
-      invitedBy = mappedUsers[user['invited_by']];
+      invitedBy = mappedUsers[user["invited_by"]];
     } catch (error) {
-      invitedBy = 'System';
+      invitedBy = "System";
     }
-    formattedUser['Email'] = user['email'];
-    formattedUser['User UID'] = user['user_uid'];
-    formattedUser['Organization Role'] = determineUserOrgRole(user, mappedRoles);
-    formattedUser['Status'] = user['status'];
-    formattedUser['Invited By'] = invitedBy;
-    formattedUser['Created Time'] = user['created_at'];
-    formattedUser['Updated Time'] = user['updated_at'];
+    formattedUser["Email"] = user["email"];
+    formattedUser["User UID"] = user["user_uid"];
+    formattedUser["Organization Role"] = determineUserOrgRole(
+      user,
+      mappedRoles
+    );
+    formattedUser["Status"] = user["status"];
+    formattedUser["Invited By"] = invitedBy;
+    formattedUser["Created Time"] = user["created_at"];
+    formattedUser["Updated Time"] = user["updated_at"];
     userList.push(formattedUser);
   });
   return userList;
@@ -478,9 +502,9 @@ function cleanOrgUsers(orgUsers, mappedUsers, mappedRoles) {
 
 function kebabize(str) {
   return str
-    .split(' ')
+    .split(" ")
     .map((word) => word.toLowerCase())
-    .join('-');
+    .join("-");
 }
 
 // https://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
@@ -491,38 +515,40 @@ function flatten(data) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       let i, l;
-      for (i = 0, l = cur.length; i < l; i++) recurse(cur[i], prop + '[' + i + ']');
+      for (i = 0, l = cur.length; i < l; i++)
+        recurse(cur[i], prop + "[" + i + "]");
       if (l == 0) result[prop] = [];
     } else {
       let isEmpty = true;
       for (let p in cur) {
         isEmpty = false;
-        recurse(cur[p], prop ? prop + '.' + p : p);
+        recurse(cur[p], prop ? prop + "." + p : p);
       }
       if (isEmpty && prop) result[prop] = {};
     }
   }
-  recurse(data, '');
+  recurse(data, "");
   return result;
 }
 
 function formatError(error) {
   try {
-    if (typeof error === 'string') {
+    if (typeof error === "string") {
       error = JSON.parse(error);
     } else {
       error = JSON.parse(error.message);
     }
   } catch (e) {}
-  let message = error.errorMessage || error.error_message || error.message || error;
+  let message =
+    error.errorMessage || error.error_message || error.message || error;
   if (error.errors && Object.keys(error.errors).length > 0) {
     Object.keys(error.errors).forEach((e) => {
       let entity = e;
-      if (e === 'authorization') entity = 'Management Token';
-      if (e === 'api_key') entity = 'Stack API key';
-      if (e === 'uid') entity = 'Content Type';
-      if (e === 'access_token') entity = 'Delivery Token';
-      message += ' ' + [entity, error.errors[e]].join(' ');
+      if (e === "authorization") entity = "Management Token";
+      if (e === "api_key") entity = "Stack API key";
+      if (e === "uid") entity = "Content Type";
+      if (e === "access_token") entity = "Delivery Token";
+      message += " " + [entity, error.errors[e]].join(" ");
     });
   }
   return message;

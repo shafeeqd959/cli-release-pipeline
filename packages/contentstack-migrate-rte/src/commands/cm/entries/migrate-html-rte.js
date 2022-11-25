@@ -1,5 +1,5 @@
 const { Command, flags } = require("testsha-command");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 const { isEmpty } = require("lodash");
 const chalk = require("chalk");
 let {

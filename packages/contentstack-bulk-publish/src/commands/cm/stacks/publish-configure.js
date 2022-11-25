@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { Command, flags } = require("testsha-command");
-const { cliux } = require("@contentstack/cli-utilities");
+const { cliux } = require("testsha-utilities");
 
 let config = require("../../../config/index.js");
 

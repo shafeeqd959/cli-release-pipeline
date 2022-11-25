@@ -1,7 +1,7 @@
 "use strict";
 
 const { Command, flags } = require("testsha-command");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 const {
   publishOnlyUnpublishedService,
 } = require("../../../services/publish-only-unpublished");

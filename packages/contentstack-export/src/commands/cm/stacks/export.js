@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 const { Command, flags } = require("testsha-command");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 
 const {
   configWithMToken,
@@ -11,7 +11,7 @@ const {
   withoutParametersWithAuthToken,
 } = require("../../../lib/util/export-flags");
 const config = require("../../../config/default");
-const { configHandler } = require("@contentstack/cli-utilities");
+const { configHandler } = require("testsha-utilities");
 
 class ExportCommand extends Command {
   async run() {

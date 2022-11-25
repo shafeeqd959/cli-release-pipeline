@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable node/no-extraneous-require */
 const { Command, flags } = require("testsha-command");
-const { cliux } = require("@contentstack/cli-utilities");
+const { cliux } = require("testsha-utilities");
 const { start } = require("../../../producer/unpublish");
 const store = require("../../../util/store.js");
 const configKey = "Unpublish";

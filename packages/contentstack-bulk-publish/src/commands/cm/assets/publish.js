@@ -2,10 +2,10 @@ const { Command, flags } = require("testsha-command");
 const { start: startPublish } = require("../../../producer/publish-assets");
 const { start: startCrossPublish } = require("../../../producer/cross-publish");
 const store = require("../../../util/store.js");
-const { cliux } = require("@contentstack/cli-utilities");
+const { cliux } = require("testsha-utilities");
 const { prettyPrint, formatError } = require("../../../util");
 const { getStack } = require("../../../util/client.js");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 let config;
 
 class AssetsPublishCommand extends Command {

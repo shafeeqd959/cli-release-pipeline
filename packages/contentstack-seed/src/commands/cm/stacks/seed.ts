@@ -1,6 +1,6 @@
 import { Command, flags } from "testsha-command";
 import ContentModelSeeder, { ContentModelSeederOptions } from "../../../seed";
-import { printFlagDeprecation } from "@contentstack/cli-utilities";
+import { printFlagDeprecation } from "testsha-utilities";
 
 export default class SeedCommand extends Command {
   static description =

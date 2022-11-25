@@ -1,5 +1,5 @@
 import { Command } from "testsha-command";
-import { cliux, logger } from "@contentstack/cli-utilities";
+import { cliux, logger } from "testsha-utilities";
 
 import { Region } from "../../../interfaces";
 

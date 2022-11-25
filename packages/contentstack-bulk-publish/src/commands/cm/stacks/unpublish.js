@@ -6,7 +6,7 @@ const store = require("../../../util/store.js");
 const configKey = "Unpublish";
 const { prettyPrint, formatError } = require("../../../util");
 const { getStack } = require("../../../util/client.js");
-const { printFlagDeprecation, cliux } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation, cliux } = require("testsha-utilities");
 let config;
 
 class UnpublishCommand extends Command {

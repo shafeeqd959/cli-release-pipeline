@@ -1,6 +1,6 @@
 import { Help } from '@oclif/core';
 import * as figlet from 'figlet';
-import { cliux } from '@contentstack/cli-utilities';
+import { cliux } from 'testsha-utilities';
 
 export default class MyHelpClass extends Help {
   constructor(config, opts) {

@@ -1,5 +1,5 @@
 import { Command } from 'testsha-command';
-import { logger, cliux } from '@contentstack/cli-utilities';
+import { logger, cliux } from 'testsha-utilities';
 
 export default class WhoamiCommand extends Command {
   static description = 'Display current users email address';

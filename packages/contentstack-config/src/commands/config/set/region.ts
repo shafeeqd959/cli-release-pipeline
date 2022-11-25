@@ -1,9 +1,5 @@
 import { Command, flags as _flags } from "testsha-command";
-import {
-  cliux,
-  logger,
-  printFlagDeprecation,
-} from "@contentstack/cli-utilities";
+import { cliux, logger, printFlagDeprecation } from "testsha-utilities";
 import { Region } from "../../../interfaces";
 import { regionHandler, interactive } from "../../../utils";
 

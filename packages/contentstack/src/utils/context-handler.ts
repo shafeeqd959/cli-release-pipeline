@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
-import { configHandler } from '@contentstack/cli-utilities';
+import { configHandler } from 'testsha-utilities';
 
 export default class CsdxContext {
   readonly id: string;

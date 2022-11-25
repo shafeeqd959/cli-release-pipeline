@@ -1,13 +1,14 @@
-# @contentstack/cli-cm-export
+# testsha-cm-export
 
 It is Contentstack’s CLI plugin to export content from the stack. To learn how to export and import content in Contentstack, refer to the [Migration guide](https://www.contentstack.com/docs/developers/cli/migration/).
 
 [![License](https://img.shields.io/npm/l/@contentstack/cli)](https://github.com/contentstack/cli/blob/main/LICENSE)
 
 <!-- toc -->
-* [@contentstack/cli-cm-export](#contentstackcli-cm-export)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [testsha-cm-export](#contentstackcli-cm-export)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 For switching to EU region update the hosts at config/default.js
@@ -33,23 +34,26 @@ For switching to AZURE-NA region update the hosts at config/default.js
 # Usage
 
 <!-- usage -->
+
 ```sh-session
-$ npm install -g @contentstack/cli-cm-export
+$ npm install -g testsha-cm-export
 $ csdx COMMAND
 running command...
 $ csdx (-v|--version|version)
-@contentstack/cli-cm-export/1.2.1 darwin-x64 node-v18.12.1
+testsha-cm-export/1.2.1 darwin-x64 node-v18.12.1
 $ csdx --help [COMMAND]
 USAGE
   $ csdx COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`csdx cm:stacks:export [-c <value>] [-k <value>] [-d <value>] [-a <value>] [--module <value>] [--content-types <value>] [--branch <value>] [--secured-assets]`](#csdx-cmstacksexport--c-value--k-value--d-value--a-value---module-value---content-types-value---branch-value---secured-assets)
+
+- [`csdx cm:stacks:export [-c <value>] [-k <value>] [-d <value>] [-a <value>] [--module <value>] [--content-types <value>] [--branch <value>] [--secured-assets]`](#csdx-cmstacksexport--c-value--k-value--d-value--a-value---module-value---content-types-value---branch-value---secured-assets)
 
 ## `csdx cm:stacks:export [-c <value>] [-k <value>] [-d <value>] [-a <value>] [--module <value>] [--content-types <value>] [--branch <value>] [--secured-assets]`
 
@@ -57,7 +61,7 @@ Export content from a stack
 
 ```
 USAGE
-  $ csdx cm:stacks:export [-c <value>] [-k <value>] [-d <value>] [-a <value>] [--module <value>] [--content-types 
+  $ csdx cm:stacks:export [-c <value>] [-k <value>] [-d <value>] [-a <value>] [--module <value>] [--content-types
   <value>] [--branch <value>] [--secured-assets]
 
 OPTIONS
@@ -84,4 +88,5 @@ EXAMPLES
 ```
 
 _See code: [src/commands/cm/stacks/export.js](https://github.com/contentstack/cli/blob/main/packages/contentstack-export/src/commands/cm/stacks/export.js)_
+
 <!-- commandsstop -->

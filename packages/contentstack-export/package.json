@@ -4,7 +4,7 @@
   "version": "1.2.2",
   "dependencies": {
     "testsha-command": "^1.0.2",
-    "@contentstack/cli-utilities": "^1.0.3",
+    "testsha-utilities": "^1.0.3",
     "@contentstack/management": "^1.6.0",
     "@oclif/command": "^1.8.16",
     "@oclif/config": "^1.18.3",
@@ -22,9 +22,9 @@
     "winston": "^3.7.2"
   },
   "devDependencies": {
-    "@contentstack/cli-auth": "^1.0.3",
-    "@contentstack/cli-config": "^1.0.2",
-    "@contentstack/cli-dev-dependencies": "^1.0.0",
+    "testsha-auth": "^1.0.3",
+    "testsha-config": "^1.0.2",
+    "testsha-dev-dependencies": "^1.0.0",
     "@oclif/dev-cli": "^1.22.2",
     "@oclif/plugin-help": "^5.1.12",
     "@oclif/test": "^1.2.6",

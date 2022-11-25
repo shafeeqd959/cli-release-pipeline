@@ -1,5 +1,5 @@
 import { Command, flags } from 'testsha-command';
-import { logger, cliux, configHandler, printFlagDeprecation } from '@contentstack/cli-utilities';
+import { logger, cliux, configHandler, printFlagDeprecation } from 'testsha-utilities';
 
 import { authHandler } from '../../utils';
 

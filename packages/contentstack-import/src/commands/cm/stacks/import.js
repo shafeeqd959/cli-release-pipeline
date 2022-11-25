@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const defaultConfig = require("../../../config/default");
 const { Command, flags } = require("testsha-command");
-const { configHandler } = require("@contentstack/cli-utilities");
+const { configHandler } = require("testsha-utilities");
 const {
   configWithMToken,
   parameterWithMToken,
@@ -10,7 +10,7 @@ const {
   parametersWithAuthToken,
   withoutParametersWithAuthToken,
 } = require("../../../lib/util/import-flags");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 
 class ImportCommand extends Command {
   async run() {

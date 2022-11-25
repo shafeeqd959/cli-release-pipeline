@@ -1,9 +1,9 @@
-import { HttpClient } from '@contentstack/cli-utilities';
-import { Stream } from 'stream';
-import * as zlib from 'zlib';
-import * as tar from 'tar';
-import * as mkdirp from 'mkdirp';
-import GithubError from './error';
+import { HttpClient } from "testsha-utilities";
+import { Stream } from "stream";
+import * as zlib from "zlib";
+import * as tar from "tar";
+import * as mkdirp from "mkdirp";
+import GithubError from "./error";
 
 export default class GitHubClient {
   readonly gitHubRepoUrl: string;
@@ -12,12 +12,12 @@ export default class GitHubClient {
 
   static parsePath(path?: string) {
     const result = {
-      username: '',
-      repo: '',
+      username: "",
+      repo: "",
     };
 
     if (path) {
-      const parts = path.split('/');
+      const parts = path.split("/");
       result.username = parts[0];
 
       if (parts.length === 2) {
@@ -36,7 +36,9 @@ export default class GitHubClient {
 
   async getAllRepos(count = 100) {
     try {
-      const response = await this.httpClient.get(`${this.gitHubUserUrl}&per_page=${count}`);
+      const response = await this.httpClient.get(
+        `${this.gitHubUserUrl}&per_page=${count}`
+      );
       return response.data.items;
     } catch (error) {
       throw this.buildError(error);
@@ -54,7 +56,10 @@ export default class GitHubClient {
 
   async checkIfRepoExists(repo: string) {
     try {
-      const response = await this.httpClient.send('HEAD', `${this.gitHubRepoUrl}/${repo}/contents`);
+      const response = await this.httpClient.send(
+        "HEAD",
+        `${this.gitHubRepoUrl}/${repo}/contents`
+      );
       return response.status === 200;
     } catch (error) {
       // do nothing
@@ -65,7 +70,9 @@ export default class GitHubClient {
 
   async getLatestTarballUrl(repo: string) {
     try {
-      const response = await this.httpClient.get(`${this.gitHubRepoUrl}/${repo}/releases/latest`);
+      const response = await this.httpClient.get(
+        `${this.gitHubRepoUrl}/${repo}/releases/latest`
+      );
       return response.data.tarball_url;
     } catch (error) {
       throw this.buildError(error);
@@ -75,7 +82,7 @@ export default class GitHubClient {
   async streamRelease(url: string): Promise<Stream> {
     const response = await this.httpClient
       .options({
-        responseType: 'stream',
+        responseType: "stream",
       })
       .get(url);
     this.httpClient.resetConfig();
@@ -90,15 +97,16 @@ export default class GitHubClient {
           tar.extract({
             cwd: destination,
             strip: 1,
-          }),
+          })
         )
-        .on('end', () => resolve())
-        .on('error', reject);
+        .on("end", () => resolve())
+        .on("error", reject);
     });
   }
 
   private buildError(error: any) {
-    const message = error.response.data?.error_message || error.response.statusText;
+    const message =
+      error.response.data?.error_message || error.response.statusText;
     const status = error.response.status;
     return new GithubError(message, status);
   }

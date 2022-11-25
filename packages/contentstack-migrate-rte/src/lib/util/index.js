@@ -21,7 +21,7 @@ const { JSDOM } = require("jsdom");
 const collapseWithSpace = require("collapse-whitespace");
 const { htmlToJson } = require("@contentstack/json-rte-serializer");
 const nodePath = require("path");
-const { cliux } = require("@contentstack/cli-utilities");
+const { cliux } = require("testsha-utilities");
 const packageValue = require("../../../package.json");
 const isBlank = (variable) => {
   return isNil(variable) || isEmpty(variable);

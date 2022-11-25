@@ -1,6 +1,6 @@
 const fs = require("fs");
 const { Command, flags } = require("testsha-command");
-const { cliux, printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { cliux, printFlagDeprecation } = require("testsha-utilities");
 
 const { getLogsDirPath } = require("../../../util/logger.js");
 

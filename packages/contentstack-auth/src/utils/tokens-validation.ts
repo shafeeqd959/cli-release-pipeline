@@ -1,4 +1,4 @@
-import { messageHandler, logger } from '@contentstack/cli-utilities';
+import { messageHandler, logger } from 'testsha-utilities';
 
 /**
  * Validate delivery token
@@ -24,15 +24,14 @@ export const validateDeliveryToken = async (
       NA: 'us',
       AZURE_NA: 'azure-na',
     };
-    
-    const stack = contentStackClient
-      .Stack({
-        api_key: apiKey,
-        delivery_token: deliveryToken,
-        environment,
-        region: regionMap[region],
-        host,
-       });
+
+    const stack = contentStackClient.Stack({
+      api_key: apiKey,
+      delivery_token: deliveryToken,
+      environment,
+      region: regionMap[region],
+      host,
+    });
     const parsedHost = host.replace(/^https?:\/\//, '');
     stack.setHost(parsedHost);
     const deliveryTokenResult = await stack.getContentTypes({ limit: 1 });
@@ -143,4 +142,3 @@ export const validateAPIKey = async (contentStackClient: any, apiKey: string): P
 
   return result;
 };
-

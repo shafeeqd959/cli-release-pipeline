@@ -1,5 +1,5 @@
 const { Command, flags } = require("testsha-command");
-const { configHandler } = require("@contentstack/cli-utilities");
+const { configHandler } = require("testsha-utilities");
 const { CloneHandler } = require("../../../lib/util/clone-handler");
 let config = require("../../../lib/util/dummyConfig.json");
 const path = require("path");

@@ -1,4 +1,4 @@
-import { logger, cliux, configHandler, HttpClient } from '@contentstack/cli-utilities';
+import { logger, cliux, configHandler, HttpClient } from 'testsha-utilities';
 
 // TBD: run region command if region is not there
 export default async function (opts): Promise<void> {

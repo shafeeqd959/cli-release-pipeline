@@ -17,11 +17,5 @@
       "**/node_modules/**",
       "packages/*/lib/**"
     ]
-  },
-  "workspaces": [
-    "./packages/*"
-  ],
-  "dependencies": {
-    "testsha-command": "^1.0.2"
   }
 }

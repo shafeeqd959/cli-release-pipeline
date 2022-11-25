@@ -4,16 +4,16 @@ import { expect, test } from '@oclif/test';
 import { Helper } from './helper';
 // @ts-ignore
 import { PRINT_LOGS } from './config.json';
-import { cliux as CliUx, messageHandler, NodeCrypto } from '@contentstack/cli-utilities';
+import { cliux as CliUx, messageHandler, NodeCrypto } from 'testsha-utilities';
 
 const messageFilePath = path.join(__dirname, '..', '..', '..', 'contentstack-utilities', 'messages/auth.json');
 const crypto = new NodeCrypto({
   typeIdentifier: '◈',
   algorithm: 'aes-192-cbc',
-  encryptionKey: process.env.ENCRYPTION_KEY || 'gjh67567mn'
+  encryptionKey: process.env.ENCRYPTION_KEY || 'gjh67567mn',
 });
-const username = process.env.ENCRYPTION_KEY ? crypto.decrypt(process.env.USERNAME) : process.env.USERNAME
-const password = process.env.ENCRYPTION_KEY ? crypto.decrypt(process.env.PASSWORD) : process.env.PASSWORD
+const username = process.env.ENCRYPTION_KEY ? crypto.decrypt(process.env.USERNAME) : process.env.USERNAME;
+const password = process.env.ENCRYPTION_KEY ? crypto.decrypt(process.env.PASSWORD) : process.env.PASSWORD;
 
 describe('contentstack-auth plugin test', () => {
   beforeEach(() => {

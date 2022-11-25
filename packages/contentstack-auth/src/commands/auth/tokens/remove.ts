@@ -1,5 +1,5 @@
 import { Command, flags } from 'testsha-command';
-import { logger, cliux, configHandler } from '@contentstack/cli-utilities';
+import { logger, cliux, configHandler } from 'testsha-utilities';
 
 export default class TokensRemoveCommand extends Command {
   static description = 'Removes selected tokens';

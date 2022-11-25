@@ -1,26 +1,34 @@
-import { configHandler } from '@contentstack/cli-utilities';
+import { configHandler } from "testsha-utilities";
 
 function validURL(str) {
   const pattern = new RegExp(
-    '^(https?:\\/\\/)?' + // protocol
-      '(([a-z0-9A-Z]\\.)*[a-z0-9-]+\\.([a-z0-9]{2,})+(\\.[a-z]{2,}\\.([a-z]{2,})|\\.([a-z]{2,}))|' + // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i',
-  )
+    "^(https?:\\/\\/)?" + // protocol
+      "(([a-z0-9A-Z]\\.)*[a-z0-9-]+\\.([a-z0-9]{2,})+(\\.[a-z]{2,}\\.([a-z]{2,})|\\.([a-z]{2,}))|" + // domain name
+      "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+      "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  );
   return Boolean(pattern.test(str));
 }
 
 // Available region list
 const regions = {
-  NA: { cma: 'https://api.contentstack.io', cda: 'https://cdn.contentstack.io', name: 'NA' },
-  EU: { cma: 'https://eu-api.contentstack.com', cda: 'https://eu-cdn.contentstack.com', name: 'EU' },
-  'AZURE-NA': {
-    cma: 'https://azure-na-api.contentstack.com',
-    cda: 'https://azure-na-cdn.contentstack.com',
-    name: 'AZURE-NA',
+  NA: {
+    cma: "https://api.contentstack.io",
+    cda: "https://cdn.contentstack.io",
+    name: "NA",
+  },
+  EU: {
+    cma: "https://eu-api.contentstack.com",
+    cda: "https://eu-cdn.contentstack.com",
+    name: "EU",
+  },
+  "AZURE-NA": {
+    cma: "https://azure-na-api.contentstack.com",
+    cda: "https://azure-na-cdn.contentstack.com",
+    name: "AZURE-NA",
   },
 };
 
@@ -34,7 +42,7 @@ class UserConfig {
   setRegion(region) {
     let selectedRegion = regions[region];
     if (selectedRegion) {
-      configHandler.set('region', selectedRegion);
+      configHandler.set("region", selectedRegion);
       return selectedRegion;
     }
   }
@@ -45,7 +53,7 @@ class UserConfig {
    * @returns { object } Object contains url for cma and cda, and region to which it is pointing to
    */
   getRegion() {
-    const regionDetails = configHandler.get('region');
+    const regionDetails = configHandler.get("region");
     if (regionDetails) return regionDetails;
 
     // returns NA region if not found in config
@@ -61,11 +69,11 @@ class UserConfig {
   setCustomRegion(regionObject) {
     if (this.validateRegion(regionObject)) {
       regionObject = this.sanitizeRegionObject(regionObject);
-      configHandler.set('region', regionObject);
+      configHandler.set("region", regionObject);
       return regionObject;
     }
     throw new TypeError(
-      'Custom region should include valid cma(URL), cda(URL), name(String) (Name for the Region) property.',
+      "Custom region should include valid cma(URL), cda(URL), name(String) (Name for the Region) property."
     );
   }
 

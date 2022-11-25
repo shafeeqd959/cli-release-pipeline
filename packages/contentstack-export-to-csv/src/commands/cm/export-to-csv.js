@@ -1,5 +1,5 @@
 const { Command, flags } = require("testsha-command");
-const { configHandler } = require("@contentstack/cli-utilities");
+const { configHandler } = require("testsha-utilities");
 const ContentstackManagementSDK = require("@contentstack/management");
 const util = require("../../util");
 const config = require("../../util/config");

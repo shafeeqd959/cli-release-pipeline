@@ -1,22 +1,25 @@
-import * as tmp from 'tmp';
-import { cliux } from '@contentstack/cli-utilities';
+import * as tmp from "tmp";
+import { cliux } from "testsha-utilities";
 
-import * as importer from '../seed/importer';
-import ContentstackClient, { Organization, Stack } from '../seed/contentstack/client';
+import * as importer from "../seed/importer";
+import ContentstackClient, {
+  Organization,
+  Stack,
+} from "../seed/contentstack/client";
 import {
   inquireOrganization,
   inquireProceed,
   inquireRepo,
   inquireStack,
   InquireStackResponse,
-} from '../seed/interactive';
-import GitHubClient from './github/client';
-import GithubError from './github/error';
+} from "../seed/interactive";
+import GitHubClient from "./github/client";
+import GithubError from "./github/error";
 
-const DEFAULT_OWNER = 'contentstack';
-const DEFAULT_STACK_PATTERN = 'stack-';
+const DEFAULT_OWNER = "contentstack";
+const DEFAULT_STACK_PATTERN = "stack-";
 
-export const ENGLISH_LOCALE = 'en-us';
+export const ENGLISH_LOCALE = "en-us";
 
 export interface ContentModelSeederOptions {
   cdaHost: string;
@@ -52,7 +55,11 @@ export default class ContentModelSeeder {
     this.ghRepo = gh.repo;
     const limit = Number(this.options.fetchLimit);
 
-    this.csClient = new ContentstackClient(options.cmaHost, options.authToken, limit);
+    this.csClient = new ContentstackClient(
+      options.cmaHost,
+      options.authToken,
+      limit
+    );
     this.ghClient = new GitHubClient(this.ghUsername, DEFAULT_STACK_PATTERN);
   }
 
@@ -61,14 +68,19 @@ export default class ContentModelSeeder {
     const { organizationResponse, stackResponse } = await this.getInput();
 
     if (stackResponse.isNew && stackResponse.name) {
-      api_key = await this.createStack(organizationResponse, stackResponse.name);
+      api_key = await this.createStack(
+        organizationResponse,
+        stackResponse.name
+      );
     } else {
       api_key = stackResponse.api_key as string;
 
       const proceed = await this.shouldProceed(api_key);
 
       if (!proceed) {
-        cliux.print('Exiting. Please re-run the command, if you wish to seed content.');
+        cliux.print(
+          "Exiting. Please re-run the command, if you wish to seed content."
+        );
         return;
       }
     }
@@ -88,14 +100,19 @@ export default class ContentModelSeeder {
     return { api_key };
   }
 
-  async getInput(): Promise<{
-    organizationResponse: Organization,
-    stackResponse: InquireStackResponse
-  } | any> {
+  async getInput(): Promise<
+    | {
+        organizationResponse: Organization;
+        stackResponse: InquireStackResponse;
+      }
+    | any
+  > {
     if (!this.ghRepo) {
       await this.inquireGitHubRepo();
     }
-    const repoExists = await this.ghClient.checkIfRepoExists(this.ghRepo as string);
+    const repoExists = await this.ghClient.checkIfRepoExists(
+      this.ghRepo as string
+    );
 
     if (repoExists === false) {
       cliux.error(`Could not find GitHub repository '${this.ghPath}'.`);
@@ -104,7 +121,9 @@ export default class ContentModelSeeder {
       let stackResponse: InquireStackResponse;
 
       if (this.options.stackUid) {
-        const stack: Stack = await this.csClient.getStack(this.options.stackUid);
+        const stack: Stack = await this.csClient.getStack(
+          this.options.stackUid
+        );
         stackResponse = {
           isNew: false,
           name: stack.name,
@@ -113,12 +132,14 @@ export default class ContentModelSeeder {
         };
       } else {
         if (this.options.orgUid) {
-          organizationResponse = await this.csClient.getOrganization(this.options.orgUid);
+          organizationResponse = await this.csClient.getOrganization(
+            this.options.orgUid
+          );
         } else {
           const organizations = await this.csClient.getOrganizations();
           if (!organizations || organizations.length === 0) {
             throw new Error(
-              'You do not have access to any organizations. Please try again or ask an Administrator for assistance.',
+              "You do not have access to any organizations. Please try again or ask an Administrator for assistance."
             );
           }
           organizationResponse = await inquireOrganization(organizations);
@@ -132,12 +153,14 @@ export default class ContentModelSeeder {
   }
 
   async createStack(organization: Organization, stackName: string) {
-    cliux.loader(`Creating Stack '${stackName}' within Organization '${organization.name}'`);
+    cliux.loader(
+      `Creating Stack '${stackName}' within Organization '${organization.name}'`
+    );
     this.options.fetchLimit;
 
     const newStack = await this.csClient.createStack({
       name: stackName,
-      description: '',
+      description: "",
       master_locale: ENGLISH_LOCALE,
       org_uid: organization.uid,
     });
@@ -150,7 +173,7 @@ export default class ContentModelSeeder {
   async shouldProceed(api_key: string) {
     const count = await this.csClient.getContentTypeCount(api_key);
 
-    if (count > 0 && this._options.skipStackConfirmation !== 'yes') {
+    if (count > 0 && this._options.skipStackConfirmation !== "yes") {
       const proceed = await inquireProceed();
 
       if (!proceed) {
@@ -167,7 +190,7 @@ export default class ContentModelSeeder {
     });
 
     cliux.print(`Creating temporary directory '${tmpDir.name}'.`);
-    cliux.loader('Downloading and extracting Stack');
+    cliux.loader("Downloading and extracting Stack");
 
     try {
       await this.ghClient.getLatest(this.ghRepo as string, tmpDir.name);
@@ -187,12 +210,14 @@ export default class ContentModelSeeder {
   async inquireGitHubRepo() {
     try {
       const allRepos = await this.ghClient.getAllRepos();
-      const stackRepos = allRepos.filter((repo: any) => repo.name.startsWith(DEFAULT_STACK_PATTERN));
+      const stackRepos = allRepos.filter((repo: any) =>
+        repo.name.startsWith(DEFAULT_STACK_PATTERN)
+      );
       const repoResponse = await inquireRepo(stackRepos);
       this.ghRepo = repoResponse.choice;
     } catch (error) {
       cliux.error(
-        `Unable to find any Stack repositories within the '${this.ghUsername}' GitHub account. Please re-run this command with a GitHub repository in the 'account/repo' format. You can also re-run the command without arguments to pull from the official Stack list.`,
+        `Unable to find any Stack repositories within the '${this.ghUsername}' GitHub account. Please re-run this command with a GitHub repository in the 'account/repo' format. You can also re-run the command without arguments to pull from the official Stack list.`
       );
     }
   }

@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { configHandler } from '@contentstack/cli-utilities';
+import { configHandler } from 'testsha-utilities';
 import TokensListCommand from '../../src/commands/auth/tokens/index';
 import { cliux } from '../../src/utils';
 
-const config = configHandler
+const config = configHandler;
 const configKeyTokens = 'tokens';
 
 function resetConfig() {

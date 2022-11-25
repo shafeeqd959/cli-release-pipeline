@@ -1,8 +1,8 @@
-const { expect, test } = require('@oclif/test');
-const sinon = require('sinon');
-const qs = require('querystring');
-const nock = require('nock');
-const { cliux } = require('@contentstack/cli-utilities');
+const { expect, test } = require("@oclif/test");
+const sinon = require("sinon");
+const qs = require("querystring");
+const nock = require("nock");
+const { cliux } = require("testsha-utilities");
 const {
   getToken,
   getContentType,
@@ -11,123 +11,143 @@ const {
   getGlobalField,
   getEntriesOnlyUID,
   getEntry,
-} = require('../utils');
-const omitDeep = require('omit-deep-lodash');
-const { isEqual, cloneDeep } = require('lodash');
-const { command } = require('../../src/lib/util');
+} = require("../utils");
+const omitDeep = require("omit-deep-lodash");
+const { isEqual, cloneDeep } = require("lodash");
+const { command } = require("../../src/lib/util");
 
-describe('Migration Config validation', () => {
+describe("Migration Config validation", () => {
   const getTokenCallback = sinon.stub();
   getTokenCallback
-    .withArgs('test1')
+    .withArgs("test1")
     .returns({
-      token: 'cs2f6c60355c432bc95972e068',
-      apiKey: 'blt1f36f82ccc346cc5',
-      type: 'management',
+      token: "cs2f6c60355c432bc95972e068",
+      apiKey: "blt1f36f82ccc346cc5",
+      type: "management",
     })
-    .withArgs('invalidAlias')
+    .withArgs("invalidAlias")
     .throws("Token with alias 'invalidAlias' was not found");
 
   test
-    .stub(cliux, 'confirm', () => false)
+    .stub(cliux, "confirm", () => false)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithsinglerte',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithsinglerte",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--delay",
+      "50",
     ])
     .catch((error) => {
-      expect(error.message).to.contain('User aborted the command.');
+      expect(error.message).to.contain("User aborted the command.");
     })
-    .it('deny config confirmation');
+    .it("deny config confirmation");
 
   test
-    .stub(cliux, 'confirm', () => true)
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command(['cm:entries:migrate-html-rte', '--config-path', './test/dummy/config/configWithEmptyPath.json', '--yes'])
-    .catch((error) => {
-      expect(error.message).to.contain('No value provided for the "paths" property in config.');
-    })
-    .it('throw error on Empty paths');
-
-  test
-    .stub(cliux, 'confirm', () => true)
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command(['cm:entries:migrate-html-rte', '--config-path', './test/dummy/config/invalidConfig.json', '--yes'])
-    .catch((error) => {
-      expect(error.message).to.contain('Invalid key type. alias must be of string type(s).');
-    })
-    .it('throw error on invalid config type');
-
-  test
-    .stub(cliux, 'confirm', () => true)
+    .stub(cliux, "confirm", () => true)
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--content-type',
-      'contenttypewithsinglerte',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/configWithEmptyPath.json",
+      "--yes",
     ])
     .catch((error) => {
-      expect(error.message).to.contain('alias is mandatory while defining config.');
+      expect(error.message).to.contain(
+        'No value provided for the "paths" property in config.'
+      );
     })
-    .it('throw error on config without alias property');
+    .it("throw error on Empty paths");
 
   test
-    .stub(cliux, 'confirm', () => true)
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => true)
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'invalidAlias',
-      '--content-type',
-      'contenttypewithsinglerte',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/invalidConfig.json",
+      "--yes",
     ])
     .catch((error) => {
-      expect(error.message).to.contain('Invalid alias provided for the management token.');
+      expect(error.message).to.contain(
+        "Invalid key type. alias must be of string type(s)."
+      );
     })
-    .it('throw error on invalidAlias');
+    .it("throw error on invalid config type");
 
   test
-    .stub(cliux, 'confirm', () => true)
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => true)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--config-path',
-      './test/dummy/config/configWithInvalidPath.json',
-      '--yes',
+      "cm:entries:migrate-html-rte",
+      "--content-type",
+      "contenttypewithsinglerte",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--delay",
+      "50",
     ])
     .catch((error) => {
-      expect(error.message).to.contain('The specified path to config file does not exist.');
+      expect(error.message).to.contain(
+        "alias is mandatory while defining config."
+      );
     })
-    .it('throw error on invalid config file');
+    .it("throw error on config without alias property");
+
+  test
+    .stub(cliux, "confirm", () => true)
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "invalidAlias",
+      "--content-type",
+      "contenttypewithsinglerte",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--delay",
+      "50",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "Invalid alias provided for the management token."
+      );
+    })
+    .it("throw error on invalidAlias");
+
+  test
+    .stub(cliux, "confirm", () => true)
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/configWithInvalidPath.json",
+      "--yes",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "The specified path to config file does not exist."
+      );
+    })
+    .it("throw error on invalid config file");
 });
-describe('Content Type with Single RTE Field of Single Type', function () {
+describe("Content Type with Single RTE Field of Single Type", function () {
   this.timeout(1000000);
-  let token = getToken('test1');
+  let token = getToken("test1");
   beforeEach(() => {
     nock(`${command.cmaAPIUrl}`, {
       reqheaders: {
@@ -156,7 +176,7 @@ describe('Content Type with Single RTE Field of Single Type', function () {
         include_count: true,
         skip: 0,
         limit: 100,
-        'only[Base][]': 'uid',
+        "only[Base][]": "uid",
       })
       .reply(200, (uri) => {
         var match = uri.match(/\/v3\/content_types\/((\w)*)\/entries/);
@@ -199,11 +219,11 @@ describe('Content Type with Single RTE Field of Single Type', function () {
         return {
           locales: [
             {
-              code: 'en-in',
+              code: "en-in",
               localized: true,
             },
             {
-              code: 'en-us',
+              code: "en-us",
             },
           ],
         };
@@ -238,15 +258,20 @@ describe('Content Type with Single RTE Field of Single Type', function () {
       .persist()
       .put(/\/v3\/content_types\/((\w)*)\/entries/)
       .reply((uri, body) => {
-        let match = uri.match(/\/v3\/content_types\/((\w)*)\/entries\/((\w)*)\?locale=((\w|-)*)/);
-        let responseModified = cloneDeep(omitDeep(body, ['uid']));
-        let expectedResponse = omitDeep(getExpectedOutput(match[1], match[3], match[5]), ['uid']);
+        let match = uri.match(
+          /\/v3\/content_types\/((\w)*)\/entries\/((\w)*)\?locale=((\w|-)*)/
+        );
+        let responseModified = cloneDeep(omitDeep(body, ["uid"]));
+        let expectedResponse = omitDeep(
+          getExpectedOutput(match[1], match[3], match[5]),
+          ["uid"]
+        );
         expectedResponse = cloneDeep(expectedResponse);
         if (isEqual(responseModified, expectedResponse)) {
           return [
             200,
             {
-              notice: 'Entry updated successfully.',
+              notice: "Entry updated successfully.",
               entry: {},
             },
           ];
@@ -254,291 +279,330 @@ describe('Content Type with Single RTE Field of Single Type', function () {
         return [
           400,
           {
-            notice: 'Update Failed.',
-            error_message: 'Entry update failed.',
+            notice: "Update Failed.",
+            error_message: "Entry update failed.",
             entry: {},
           },
         ];
       });
   });
   const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
   });
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
-    .command(['cm:entries:migrate-html-rte', '--config-path', './test/dummy/config/config.json', '--yes'])
-    .it('execute using config file w/o locale', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 2 Entrie(s)');
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/config.json",
+      "--yes",
+    ])
+    .it("execute using config file w/o locale", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 2 Entrie(s)"
+      );
     });
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
-    .command(['cm:entries:migrate-html-rte', '--config-path', './test/dummy/config/config_locale.json', '--yes'])
-    .it('execute using config file w/ locale', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 1 Entrie(s)');
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/config_locale.json",
+      "--yes",
+    ])
+    .it("execute using config file w/ locale", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 1 Entrie(s)"
+      );
     });
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
-    .command(['cm:entries:migrate-html-rte', '--config-path', './test/dummy/config/config-locale-2.json', '--yes'])
-    .it('execute using config file w/ multiple locale', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 3 Entrie(s)');
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/config-locale-2.json",
+      "--yes",
+    ])
+    .it("execute using config file w/ multiple locale", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 3 Entrie(s)"
+      );
     });
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithsinglerte',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithsinglerte",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--delay",
+      "50",
     ])
-    .it('execute using flags (w/o locale)', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 2 Entrie(s)');
+    .it("execute using flags (w/o locale)", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 2 Entrie(s)"
+      );
     });
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithsinglerte',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--locale',
-      'en-in',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithsinglerte",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--locale",
+      "en-in",
+      "--delay",
+      "50",
     ])
-    .it('execute using flags w/ locale', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 1 Entrie(s)');
+    .it("execute using flags w/ locale", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 1 Entrie(s)"
+      );
     });
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithsinglerte',
-      '--html-path',
-      'rich_text_editor.invalidPath',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('The specified path to invalidPath HTML RTE does not exist.');
-    })
-    .it('throw error on invalid html rte path');
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithinvalidhtmlrteschema',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('The specified path to rich_text_editor HTML RTE does not exist.');
-    })
-    .it('throw error on invalid html rte field schema');
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithinvalidjsonrteschema',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('The specified path to supercharged_rte JSON RTE does not exist.');
-    })
-    .it('throw error on invalid json rte field schema');
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithsinglerte',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte.invalidPath',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('The specified path to invalidPath JSON RTE does not exist.');
-    })
-    .it('throw error on invalid json rte path');
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--config-path',
-      './test/dummy/config/configForInvalidContentType.json',
-      '--yes',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('Cannot convert "Multiple" type HTML RTE to "Single" type JSON RTE.');
-    })
-    .it('throw error on migration of Mutiple Html rte with single Json rte');
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithemptyschema',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('The contenttypewithemptyschema content type contains an empty schema.');
-    })
-    .it('throw error on content type with empty schema');
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypedifferentlevelrte',
-      '--html-path',
-      'group.rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithsinglerte",
+      "--html-path",
+      "rich_text_editor.invalidPath",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
     ])
     .catch((error) => {
       expect(error.message).to.contain(
-        'To complete migration, HTML RTE and JSON RTE should be present at the same field depth level.',
+        "The specified path to invalidPath HTML RTE does not exist."
       );
     })
-    .it('throw error on different level rte migration');
+    .it("throw error on invalid html rte path");
 
   test
-    .stub(cliux, 'confirm', () => true)
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'invalidContentType',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithinvalidhtmlrteschema",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
     ])
     .catch((error) => {
-      expect(error.message).to.contain("The Content Type 'invalidContentType' was not found. Please try again.");
+      expect(error.message).to.contain(
+        "The specified path to rich_text_editor HTML RTE does not exist."
+      );
     })
-    .it('throw error on invalid contenttype');
+    .it("throw error on invalid html rte field schema");
 
   test
-    .stub(cliux, 'confirm', () => true)
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithentryupdateerror',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithinvalidjsonrteschema",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
     ])
-    .it('notify user on entry update failed', (ctx) => {
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "The specified path to supercharged_rte JSON RTE does not exist."
+      );
+    })
+    .it("throw error on invalid json rte field schema");
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithsinglerte",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte.invalidPath",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "The specified path to invalidPath JSON RTE does not exist."
+      );
+    })
+    .it("throw error on invalid json rte path");
+
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/configForInvalidContentType.json",
+      "--yes",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        'Cannot convert "Multiple" type HTML RTE to "Single" type JSON RTE.'
+      );
+    })
+    .it("throw error on migration of Mutiple Html rte with single Json rte");
+
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithemptyschema",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "The contenttypewithemptyschema content type contains an empty schema."
+      );
+    })
+    .it("throw error on content type with empty schema");
+
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypedifferentlevelrte",
+      "--html-path",
+      "group.rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "To complete migration, HTML RTE and JSON RTE should be present at the same field depth level."
+      );
+    })
+    .it("throw error on different level rte migration");
+
+  test
+    .stub(cliux, "confirm", () => true)
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "invalidContentType",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--delay",
+      "50",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "The Content Type 'invalidContentType' was not found. Please try again."
+      );
+    })
+    .it("throw error on invalid contenttype");
+
+  test
+    .stub(cliux, "confirm", () => true)
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithentryupdateerror",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .it("notify user on entry update failed", (ctx) => {
       expect(ctx.stdout).to.contain(
-        `Faced issue while migrating some entrie(s) for "contenttypewithentryupdateerror" Content-type in "en-us" locale,"blta9b16ac2827c54ed, blta9b16ac2827c54e1"`,
+        `Faced issue while migrating some entrie(s) for "contenttypewithentryupdateerror" Content-type in "en-us" locale,"blta9b16ac2827c54ed, blta9b16ac2827c54e1"`
       );
     });
 });
-describe('Global Field Migration', () => {
-  let token = getToken('test1');
+describe("Global Field Migration", () => {
+  let token = getToken("test1");
   beforeEach(() => {
     nock(`${command.cmaAPIUrl}`, {
       reqheaders: {
@@ -558,330 +622,367 @@ describe('Global Field Migration', () => {
   });
 
   const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
   });
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
-    .command(['cm:entries:migrate-html-rte', '--config-path', './test/dummy/config/configForGlobalField.json', '--yes'])
-    .it('execute using config file', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 2 Content Type(s) and 2 Entrie(s)');
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/configForGlobalField.json",
+      "--yes",
+    ])
+    .it("execute using config file", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 2 Content Type(s) and 2 Entrie(s)"
+      );
     });
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'globalfieldwithemptycontenttype',
-      '--global-field',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('globalfieldformigration Global field is not referred in any content type.');
-    })
-    .it('throw error on global field with empty referred content_types');
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'globalfieldwithinvalidcontenttype',
-      '--global-field',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "globalfieldwithemptycontenttype",
+      "--global-field",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
     ])
     .catch((error) => {
       expect(error.message).to.contain(
-        'The contenttypewithemptyschema content type referred in globalfieldformigration contains an empty schema.',
+        "globalfieldformigration Global field is not referred in any content type."
       );
     })
-    .it('throw error on global field with invalid content_type');
+    .it("throw error on global field with empty referred content_types");
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'globalfieldwithemptyschema',
-      '--global-field',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .catch((error) => {
-      expect(error.message).to.contain('The globalfieldwithemptyschema Global field contains an empty schema.');
-    })
-    .it('throw error on global field with empty schema');
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'globalfieldwithemptyschemacontenttype',
-      '--global-field',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "globalfieldwithinvalidcontenttype",
+      "--global-field",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
     ])
     .catch((error) => {
       expect(error.message).to.contain(
-        'The contenttypewithemptyschema content type referred in globalfieldwithemptyschemacontenttype contains an empty schema.',
+        "The contenttypewithemptyschema content type referred in globalfieldformigration contains an empty schema."
       );
     })
-    .it('throw error on global field with empty schema content_type');
+    .it("throw error on global field with invalid content_type");
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'invalidUidGlobalfield',
-      '--global-field',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "globalfieldwithemptyschema",
+      "--global-field",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
     ])
     .catch((error) => {
-      expect(error.message).to.contain("The Global Field 'invalidUidGlobalfield' was not found. Please try again.");
+      expect(error.message).to.contain(
+        "The globalfieldwithemptyschema Global field contains an empty schema."
+      );
     })
-    .it('throw error on invalid global_field uid');
-});
+    .it("throw error on global field with empty schema");
 
-describe('Content Type with single rte of multiple type', () => {
-  const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
-  });
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command(['cm:entries:migrate-html-rte', '--config-path', './test/dummy/config/configForMultipleRte.json', '--yes'])
-    .it('execute using config file', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 1 Entrie(s)');
-    });
-});
-
-describe('Content Type with Single RTE inside modular block', () => {
-  const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
-  });
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithmodularblock',
-      '--html-path',
-      'modular_blocks.test1.rich_text_editor',
-      '--json-path',
-      'modular_blocks.test1.supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "globalfieldwithemptyschemacontenttype",
+      "--global-field",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
     ])
-    .it('execute using Flags', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 1 Entrie(s)');
-    });
-});
-
-describe('Content Type with Single RTE of type multiple inside group', () => {
-  const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
-  });
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithgroup',
-      '--html-path',
-      'group.rich_text_editor',
-      '--json-path',
-      'group.supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .it('execute using Flags', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 1 Entrie(s)');
-    });
-});
-
-describe('Content Type with Single RTE inside group of type multiple', () => {
-  const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
-  });
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithmultiplegroup',
-      '--html-path',
-      'group.rich_text_editor',
-      '--json-path',
-      'group.supercharged_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .it('execute using Flags', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 1 Entrie(s)');
-    });
-});
-
-describe('Content Type with multiple file field', () => {
-  const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
-  });
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content-type',
-      'contenttypewithfilefield',
-      '--html-path',
-      'rich_text_editor',
-      '--json-path',
-      'json_rte',
-      '--yes',
-      '--delay',
-      '50',
-    ])
-    .it('execute using Flags', (ctx) => {
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 1 Entrie(s)');
-    });
-});
-
-describe('Migration with old flags and command', () => {
-  const getTokenCallback = sinon.stub();
-  getTokenCallback.withArgs('test1').returns({
-    token: 'cs2f6c60355c432bc95972e068',
-    apiKey: 'blt1f36f82ccc346cc5',
-    type: 'management',
-  });
-
-  test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
-    .stdout()
-    .command(['cm:migrate-rte', '--configPath', './test/dummy/config/config.json', '--yes'])
-    .it('execute using config file w/o locale', (ctx) => {
-      expect(ctx.stdout).to.contain(
-        `DEPRECATION WARNING: flags -p,--configPath will be removed in two months, start using -c,--config-path flags instead`,
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "The contenttypewithemptyschema content type referred in globalfieldwithemptyschemacontenttype contains an empty schema."
       );
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 2 Entrie(s)');
+    })
+    .it("throw error on global field with empty schema content_type");
+
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "invalidUidGlobalfield",
+      "--global-field",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .catch((error) => {
+      expect(error.message).to.contain(
+        "The Global Field 'invalidUidGlobalfield' was not found. Please try again."
+      );
+    })
+    .it("throw error on invalid global_field uid");
+});
+
+describe("Content Type with single rte of multiple type", () => {
+  const getTokenCallback = sinon.stub();
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
+  });
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--config-path",
+      "./test/dummy/config/configForMultipleRte.json",
+      "--yes",
+    ])
+    .it("execute using config file", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 1 Entrie(s)"
+      );
+    });
+});
+
+describe("Content Type with Single RTE inside modular block", () => {
+  const getTokenCallback = sinon.stub();
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
+  });
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithmodularblock",
+      "--html-path",
+      "modular_blocks.test1.rich_text_editor",
+      "--json-path",
+      "modular_blocks.test1.supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .it("execute using Flags", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 1 Entrie(s)"
+      );
+    });
+});
+
+describe("Content Type with Single RTE of type multiple inside group", () => {
+  const getTokenCallback = sinon.stub();
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
+  });
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithgroup",
+      "--html-path",
+      "group.rich_text_editor",
+      "--json-path",
+      "group.supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .it("execute using Flags", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 1 Entrie(s)"
+      );
+    });
+});
+
+describe("Content Type with Single RTE inside group of type multiple", () => {
+  const getTokenCallback = sinon.stub();
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
+  });
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithmultiplegroup",
+      "--html-path",
+      "group.rich_text_editor",
+      "--json-path",
+      "group.supercharged_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .it("execute using Flags", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 1 Entrie(s)"
+      );
+    });
+});
+
+describe("Content Type with multiple file field", () => {
+  const getTokenCallback = sinon.stub();
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
+  });
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content-type",
+      "contenttypewithfilefield",
+      "--html-path",
+      "rich_text_editor",
+      "--json-path",
+      "json_rte",
+      "--yes",
+      "--delay",
+      "50",
+    ])
+    .it("execute using Flags", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 1 Entrie(s)"
+      );
+    });
+});
+
+describe("Migration with old flags and command", () => {
+  const getTokenCallback = sinon.stub();
+  getTokenCallback.withArgs("test1").returns({
+    token: "cs2f6c60355c432bc95972e068",
+    apiKey: "blt1f36f82ccc346cc5",
+    type: "management",
+  });
+
+  test
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
+    .stdout()
+    .command([
+      "cm:migrate-rte",
+      "--configPath",
+      "./test/dummy/config/config.json",
+      "--yes",
+    ])
+    .it("execute using config file w/o locale", (ctx) => {
+      expect(ctx.stdout).to.contain(
+        `DEPRECATION WARNING: flags -p,--configPath will be removed in two months, start using -c,--config-path flags instead`
+      );
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 2 Entrie(s)"
+      );
     });
 
   test
-    .stub(cliux, 'confirm', () => 'yes')
-    .stub(command, 'getToken', getTokenCallback)
+    .stub(cliux, "confirm", () => "yes")
+    .stub(command, "getToken", getTokenCallback)
     .stdout()
     .command([
-      'cm:entries:migrate-html-rte',
-      '--alias',
-      'test1',
-      '--content_type',
-      'contenttypewithsinglerte',
-      '--htmlPath',
-      'rich_text_editor',
-      '--jsonPath',
-      'supercharged_rte',
-      '--delay',
-      '50',
+      "cm:entries:migrate-html-rte",
+      "--alias",
+      "test1",
+      "--content_type",
+      "contenttypewithsinglerte",
+      "--htmlPath",
+      "rich_text_editor",
+      "--jsonPath",
+      "supercharged_rte",
+      "--delay",
+      "50",
     ])
-    .it('execute using flags (w/o locale)', (ctx) => {
+    .it("execute using flags (w/o locale)", (ctx) => {
       expect(ctx.stdout).to.contain(
-        `DEPRECATION WARNING: flags -c,--content_type will be removed in two months, start using --content-type flags instead`,
+        `DEPRECATION WARNING: flags -c,--content_type will be removed in two months, start using --content-type flags instead`
       );
       expect(ctx.stdout).to.contain(
-        `DEPRECATION WARNING: flags -h,--htmlPath will be removed in two months, start using --html-path flags instead`,
+        `DEPRECATION WARNING: flags -h,--htmlPath will be removed in two months, start using --html-path flags instead`
       );
       expect(ctx.stdout).to.contain(
-        `DEPRECATION WARNING: flags -j,--jsonPath will be removed in two months, start using --json-path flags instead`,
+        `DEPRECATION WARNING: flags -j,--jsonPath will be removed in two months, start using --json-path flags instead`
       );
 
-      expect(ctx.stdout).to.contain('Updated 1 Content Type(s) and 2 Entrie(s)');
+      expect(ctx.stdout).to.contain(
+        "Updated 1 Content Type(s) and 2 Entrie(s)"
+      );
     });
 });

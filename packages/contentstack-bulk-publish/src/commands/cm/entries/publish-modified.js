@@ -2,11 +2,11 @@ const { Command, flags } = require("testsha-command");
 const { start } = require("../../../producer/publish-edits");
 const store = require("../../../util/store.js");
 // eslint-disable-next-line node/no-extraneous-require
-const { cliux } = require("@contentstack/cli-utilities");
+const { cliux } = require("testsha-utilities");
 const configKey = "publish_edits_on_env";
 const { prettyPrint, formatError } = require("../../../util");
 const { getStack } = require("../../../util/client.js");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 let config;
 
 class PublishModifiedCommand extends Command {

@@ -1,10 +1,10 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { configHandler } from '@contentstack/cli-utilities';
+import { configHandler } from 'testsha-utilities';
 import TokensRemoveCommand from '../../src/commands/auth/tokens/remove';
 import { cliux } from '../../src/utils';
 
-const config = configHandler
+const config = configHandler;
 const configKeyTokens = 'tokens';
 const token1Alias = 'test-token-remove-command';
 

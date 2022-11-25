@@ -1,13 +1,13 @@
-import { Stream } from 'stream';
-import * as zlib from 'zlib';
-import * as tar from 'tar';
-import * as mkdirp from 'mkdirp';
-import { HttpRequestConfig, HttpClient } from '@contentstack/cli-utilities';
+import { Stream } from "stream";
+import * as zlib from "zlib";
+import * as tar from "tar";
+import * as mkdirp from "mkdirp";
+import { HttpRequestConfig, HttpClient } from "testsha-utilities";
 
-import GithubError from './github-error';
-import messageHandler from '../../messages';
+import GithubError from "./github-error";
+import messageHandler from "../../messages";
 
-const DEFAULT_BRANCH = 'cli-use';
+const DEFAULT_BRANCH = "cli-use";
 
 export interface Repo {
   user: string;
@@ -26,12 +26,12 @@ export default class GitHubClient {
 
   static parsePath(gitPath?: string): Repo {
     const result = {
-      user: '',
-      name: '',
+      user: "",
+      name: "",
     };
 
     if (gitPath) {
-      const parts = gitPath.split('/');
+      const parts = gitPath.split("/");
       result.user = parts[0];
       if (parts.length === 2) {
         result.name = parts[1];
@@ -47,9 +47,9 @@ export default class GitHubClient {
     if (privateRepo) {
       this.accessToken = token;
     }
-    this.gitTarBallUrl = `https://api.github.com/repos/${repo.user}/${repo.name}/tarball/${
-      repo.branch || DEFAULT_BRANCH
-    }`;
+    this.gitTarBallUrl = `https://api.github.com/repos/${repo.user}/${
+      repo.name
+    }/tarball/${repo.branch || DEFAULT_BRANCH}`;
   }
 
   async getLatest(destination: string): Promise<void> {
@@ -60,7 +60,7 @@ export default class GitHubClient {
 
   async streamRelease(url: string): Promise<Stream> {
     const options: HttpRequestConfig = {
-      responseType: 'stream',
+      responseType: "stream",
     };
 
     if (this.private) {
@@ -69,7 +69,10 @@ export default class GitHubClient {
           Authorization: `token ${this.accessToken}`,
         };
       } else {
-        throw new GithubError(messageHandler.parse('CLI_BOOTSTRAP_GITHUB_ACCESS_NOT_FOUND'), 1);
+        throw new GithubError(
+          messageHandler.parse("CLI_BOOTSTRAP_GITHUB_ACCESS_NOT_FOUND"),
+          1
+        );
       }
     }
 
@@ -85,12 +88,12 @@ export default class GitHubClient {
           tar.extract({
             cwd: destination,
             strip: 1,
-          }),
+          })
         )
-        .on('end', () => {
-          resolve('done');
+        .on("end", () => {
+          resolve("done");
         })
-        .on('error', reject);
+        .on("error", reject);
     });
   }
 }

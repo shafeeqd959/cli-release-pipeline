@@ -1,5 +1,5 @@
 import { Command } from 'testsha-command';
-import { logger, cliux, configHandler } from '@contentstack/cli-utilities';
+import { logger, cliux, configHandler } from 'testsha-utilities';
 
 export default class TokensListCommand extends Command {
   static aliases = ['tokens'];

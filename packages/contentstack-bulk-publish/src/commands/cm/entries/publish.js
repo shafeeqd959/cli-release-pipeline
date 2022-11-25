@@ -4,12 +4,12 @@ const { Command, flags } = require("testsha-command");
 const { start: startPublish } = require("../../../producer/publish-entries");
 const { start: startCrossPublish } = require("../../../producer/cross-publish");
 const store = require("../../../util/store.js");
-const { cliux } = require("@contentstack/cli-utilities");
+const { cliux } = require("testsha-utilities");
 const configKey = "publish_entries";
 const configKeyCrossEnv = "cross_env_publish";
 const { prettyPrint, formatError } = require("../../../util");
 const { getStack } = require("../../../util/client.js");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 let config;
 
 class PublishEntriesCommand extends Command {

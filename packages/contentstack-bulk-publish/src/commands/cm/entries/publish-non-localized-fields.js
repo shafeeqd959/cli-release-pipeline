@@ -1,11 +1,11 @@
 const { Command, flags } = require("testsha-command");
 const { start } = require("../../../producer/nonlocalized-field-changes");
 const store = require("../../../util/store.js");
-const { cliux } = require("@contentstack/cli-utilities");
+const { cliux } = require("testsha-utilities");
 const configKey = "nonlocalized_field_changes";
 const { prettyPrint, formatError } = require("../../../util");
 const { getStack } = require("../../../util/client.js");
-const { printFlagDeprecation } = require("@contentstack/cli-utilities");
+const { printFlagDeprecation } = require("testsha-utilities");
 let config;
 
 class NonlocalizedFieldChangesCommand extends Command {
