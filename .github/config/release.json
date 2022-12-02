@@ -1,6 +1,6 @@
 {
-    "version": "1.2.4",
-    "releaseAll": false,
+    "version": "1.2.5",
+    "releaseAll": true,
     "plugins": {
         "utilities": false,
         "command": false,
