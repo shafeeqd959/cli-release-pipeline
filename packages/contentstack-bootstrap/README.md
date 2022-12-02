@@ -3,27 +3,24 @@ Contentstack CLI’s “Bootstrap” plugin enables you to automate the process 
 This means that all the required steps such as stack, environment, and content type creation, entry and asset publishing are performed just by using a single command.
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g testsha-cm-bootstrap
 $ csdx COMMAND
 running command...
 $ csdx (-v|--version|version)
-testsha-cm-bootstrap/1.1.3 darwin-x64 node-v18.12.1
+testsha-cm-bootstrap/1.1.4 darwin-arm64 node-v18.11.0
 $ csdx --help [COMMAND]
 USAGE
   $ csdx COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 ```sh-session
@@ -39,8 +36,7 @@ USAGE
 # Commands
 
 <!-- commands -->
-
-- [`csdx cm:bootstrap`](#csdx-cmbootstrap)
+* [`csdx cm:bootstrap`](#csdx-cmbootstrap)
 
 ## `csdx cm:bootstrap`
 
@@ -69,10 +65,9 @@ EXAMPLES
   $ csdx cm:bootstrap --project-dir <path/to/setup/the/app>
   $ csdx cm:bootstrap --app-name "reactjs-starter" --project-dir <path/to/setup/the/app>
   $ csdx cm:bootstrap --app-name "reactjs-starter" --project-dir <path/to/setup/the/app> --stack-api-key "stack-api-key"
-  $ csdx cm:bootstrap --app-name "reactjs-starter" --project-dir <path/to/setup/the/app> --org "your-org-uid"
+  $ csdx cm:bootstrap --app-name "reactjs-starter" --project-dir <path/to/setup/the/app> --org "your-org-uid" 
   --stack-name "stack-name"
 ```
 
 _See code: [src/commands/cm/bootstrap.ts](https://github.com/contentstack/cli/blob/main/packages/contentstack-bootstrap/src/commands/cm/bootstrap.ts)_
-
 <!-- commandsstop -->

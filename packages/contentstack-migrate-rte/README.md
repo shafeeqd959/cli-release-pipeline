@@ -3,35 +3,31 @@
 It is Contentstack’s CLI plugin to migrate rte. Using this command, you can copy existing value of HTML RTE into JSON RTE.
 
 <!-- toc -->
-
-- [testsha-cm-migrate-rte](#contentstackcli-cm-migrate-rte)
-- [Usage](#usage)
-- [Commands](#commands)
+* [testsha-cm-migrate-rte](#testsha-cm-migrate-rte)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g testsha-cm-migrate-rte
 $ csdx COMMAND
 running command...
 $ csdx (-v|--version|version)
-testsha-cm-migrate-rte/1.1.3 darwin-x64 node-v18.12.1
+testsha-cm-migrate-rte/1.1.4 darwin-arm64 node-v18.11.0
 $ csdx --help [COMMAND]
 USAGE
   $ csdx COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`csdx cm:entries:migrate-html-rte`](#csdx-cmentriesmigrate-html-rte)
+* [`csdx cm:entries:migrate-html-rte`](#csdx-cmentriesmigrate-html-rte)
 
 ## `csdx cm:entries:migrate-html-rte`
 
@@ -66,21 +62,20 @@ EXAMPLES
   csdx cm:entries:migrate-html-rte --config-path path/to/config.json
 
   Using Flags
-  csdx cm:entries:migrate-html-rte --alias alias --content-type content_type_uid --html-path html-path --json-path
+  csdx cm:entries:migrate-html-rte --alias alias --content-type content_type_uid --html-path html-path --json-path 
   json-path
 
   Nested RTE
-  csdx cm:entries:migrate-html-rte --alias alias --content-type content_type_uid --html-path
+  csdx cm:entries:migrate-html-rte --alias alias --content-type content_type_uid --html-path 
   modular_block_uid.block_uid.html_rte_uid --json-path modular_block_uid.block_uid.json_rte_uid
 
-  csdx cm:entries:migrate-html-rte --alias alias --content-type content_type_uid --html-path group_uid.html_rte_uid
+  csdx cm:entries:migrate-html-rte --alias alias --content-type content_type_uid --html-path group_uid.html_rte_uid 
   --json-path group_uid.json_rte_uid
 
   Global Field
-  csdx cm:entries:migrate-html-rte --alias alias --content-type global_field_uid --global-field --html-path html-path
+  csdx cm:entries:migrate-html-rte --alias alias --content-type global_field_uid --global-field --html-path html-path 
   --json-path json-path
 ```
 
 _See code: [src/commands/cm/entries/migrate-html-rte.js](https://github.com/contentstack/cli/blob/main/packages/contentstack-migrate-rte/src/commands/cm/entries/migrate-html-rte.js)_
-
 <!-- commandsstop -->

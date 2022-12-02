@@ -5,35 +5,32 @@ The config namespace contains all the commands that you will need to configure t
 [![License](https://img.shields.io/npm/l/@contentstack/cli)](https://github.com/contentstack/cli/blob/main/LICENSE)
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
+* [testsha-config](#testsha-config)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g testsha-config
 $ csdx COMMAND
 running command...
 $ csdx (-v|--version|version)
-testsha-config/1.0.2 darwin-x64 node-v18.12.1
+testsha-config/1.0.4 darwin-arm64 node-v18.11.0
 $ csdx --help [COMMAND]
 USAGE
   $ csdx COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-
-- [`csdx config:get:region`](#csdx-configgetregion)
-- [`csdx config:set:region [REGION]`](#csdx-configsetregion-region)
+* [`csdx config:get:region`](#csdx-configgetregion)
+* [`csdx config:set:region [REGION]`](#csdx-configsetregion-region)
 
 ## `csdx config:get:region`
 
@@ -74,5 +71,4 @@ EXAMPLES
 ```
 
 _See code: [src/commands/config/set/region.ts](https://github.com/contentstack/cli/blob/main/packages/contentstack-config/src/commands/config/set/region.ts)_
-
 <!-- commandsstop -->

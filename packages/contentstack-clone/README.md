@@ -3,27 +3,25 @@
 It is Contentstack’s CLI plugin to clone a stack. Using this command, you can export a stack’s content/schema to a new or existing stack. Refer to the [Clone a Stack](https://www.contentstack.com/docs/developers/cli/clone-a-stack/) documentation to learn more.
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
+* [testsha-cm-clone](#testsha-cm-clone)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g testsha-cm-clone
 $ csdx COMMAND
 running command...
 $ csdx (-v|--version|version)
-testsha-cm-clone/1.1.3 darwin-x64 node-v18.12.1
+testsha-cm-clone/1.1.4 darwin-arm64 node-v18.11.0
 $ csdx --help [COMMAND]
 USAGE
   $ csdx COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 ```sh-session
@@ -39,8 +37,7 @@ USAGE
 # Commands
 
 <!-- commands -->
-
-- [`csdx cm:stacks:clone [--source-branch <value>] [--target-branch <value>] [--source-management-token-alias <value>] [--destination-management-token-alias <value>] [-n <value>] [--type a|b] [--source-stack-api-key <value>] [--destination-stack-api-key <value>] [--import-webhook-status disable|current]`](#csdx-cmstacksclone---source-branch-value---target-branch-value---source-management-token-alias-value---destination-management-token-alias-value--n-value---type-ab---source-stack-api-key-value---destination-stack-api-key-value---import-webhook-status-disablecurrent)
+* [`csdx cm:stacks:clone [--source-branch <value>] [--target-branch <value>] [--source-management-token-alias <value>] [--destination-management-token-alias <value>] [-n <value>] [--type a|b] [--source-stack-api-key <value>] [--destination-stack-api-key <value>] [--import-webhook-status disable|current]`](#csdx-cmstacksclone---source-branch-value---target-branch-value---source-management-token-alias-value---destination-management-token-alias-value--n-value---type-ab---source-stack-api-key-value---destination-stack-api-key-value---import-webhook-status-disablecurrent)
 
 ## `csdx cm:stacks:clone [--source-branch <value>] [--target-branch <value>] [--source-management-token-alias <value>] [--destination-management-token-alias <value>] [-n <value>] [--type a|b] [--source-stack-api-key <value>] [--destination-stack-api-key <value>] [--import-webhook-status disable|current]`
 
@@ -48,8 +45,8 @@ Clone data (structure/content or both) of a stack into another stack
 
 ```
 USAGE
-  $ csdx cm:stacks:clone [--source-branch <value>] [--target-branch <value>] [--source-management-token-alias <value>]
-  [--destination-management-token-alias <value>] [-n <value>] [--type a|b] [--source-stack-api-key <value>]
+  $ csdx cm:stacks:clone [--source-branch <value>] [--target-branch <value>] [--source-management-token-alias <value>] 
+  [--destination-management-token-alias <value>] [-n <value>] [--type a|b] [--source-stack-api-key <value>] 
   [--destination-stack-api-key <value>] [--import-webhook-status disable|current]
 
 OPTIONS
@@ -90,14 +87,11 @@ EXAMPLES
   csdx cm:stacks:clone
   csdx cm:stacks:clone --source-branch <source-branch-name> --target-branch <target-branch-name> --yes
   csdx cm:stacks:clone --source-stack-api-key <apiKey> --destination-stack-api-key <apiKey>
-  csdx cm:stacks:clone --source-management-token-alias <management token alias> --destination-management-token-alias
+  csdx cm:stacks:clone --source-management-token-alias <management token alias> --destination-management-token-alias 
   <management token alias>
-  csdx cm:stacks:clone --source-branch --target-branch --source-management-token-alias <management token alias>
+  csdx cm:stacks:clone --source-branch --target-branch --source-management-token-alias <management token alias> 
   --destination-management-token-alias <management token alias>
-  csdx cm:stacks:clone --source-branch --target-branch --source-management-token-alias <management token alias>
+  csdx cm:stacks:clone --source-branch --target-branch --source-management-token-alias <management token alias> 
   --destination-management-token-alias <management token alias> --type <value a or b>
 ```
-
-_See code: [src/commands/cm/stacks/clone.js](https://github.com/contentstack/cli/blob/main/packages/contentstack-clone/src/commands/cm/stacks/clone.js)_
-
 <!-- commandsstop -->
