@@ -1,7 +1,7 @@
 {
   "name": "testsha-command",
   "description": "Contentstack CLI plugin for configuration",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Contentstack",
   "main": "lib/index.js",
   "types": "./types/index.d.ts",
