@@ -1,7 +1,7 @@
 {
   "name": "testsha-cm-import",
   "description": "Contentstack CLI plugin to import content into stack",
-  "version": "1.2.4",
+  "version": "1.2.6",
   "dependencies": {
     "testsha-command": "^1.0.2",
     "@contentstack/management": "^1.6.0",
