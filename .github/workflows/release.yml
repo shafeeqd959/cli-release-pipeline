@@ -211,12 +211,6 @@ jobs:
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: ./packages/contentstack/package.json
-      - name: Publishing core
-        uses: JS-DevTools/npm-publish@v1
-        if: ${{ steps.core-installation.conclusion == 'success'  }}
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./packages/contentstack/package.json
       - uses: actions/checkout@v2
         with:
           ref: "prod-qa-pipeline"
