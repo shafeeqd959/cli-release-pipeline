@@ -1,13 +1,13 @@
 {
     "version": "1.2.4",
-    "releaseAll": true,
+    "releaseAll": false,
     "plugins": {
         "utilities": false,
         "command": false,
         "config": false,
         "auth": false,
         "export": false,
-        "import": true,
+        "import": false,
         "clone": false,
         "export-to-csv": false,
         "migrate-rte": false,
@@ -16,6 +16,6 @@
         "bootstrap": false,
         "bulk-publish": false,
         "dev-dependencies": false,
-        "core": false
+        "core": true
     }
 }

@@ -1,7 +1,7 @@
 {
   "name": "testsha-cli",
   "description": "Command-line tool (CLI) to interact with Contentstack",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "author": "Contentstack",
   "bin": {
     "csdx": "./bin/run"
