@@ -1,7 +1,7 @@
 {
   "name": "testsha-cm-bulk-publish",
   "description": "Contentstack CLI plugin for bulk publish actions",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "dependencies": {
     "testsha-command": "^1.0.2",
     "testsha-utilities": "^1.0.3",

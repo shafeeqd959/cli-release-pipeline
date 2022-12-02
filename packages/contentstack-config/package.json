@@ -1,7 +1,7 @@
 {
   "name": "testsha-config",
   "description": "Contentstack CLI plugin for configuration",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "author": "Contentstack",
   "bin": {
     "csdx": "./bin/run"

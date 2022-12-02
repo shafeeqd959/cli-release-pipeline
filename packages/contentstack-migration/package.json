@@ -1,6 +1,6 @@
 {
   "name": "testsha-migration",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "author": "@contentstack",
   "dependencies": {
     "testsha-command": "^1.0.2",

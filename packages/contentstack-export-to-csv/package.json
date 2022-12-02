@@ -1,7 +1,7 @@
 {
   "name": "testsha-cm-export-to-csv",
   "description": "Export entities to csv",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "author": "Abhinav Gupta @abhinav-from-contentstack",
   "dependencies": {
     "testsha-command": "^1.0.2",
