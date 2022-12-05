@@ -1,7 +1,7 @@
 {
   "name": "testsha-cm-seed",
   "description": "create a Stack from existing content types, entries, assets, etc.",
-  "version": "1.1.4",
+  "version": "1.1.6",
   "dependencies": {
     "testsha-cm-import": "^1.2.0",
     "testsha-command": "^1.0.2",

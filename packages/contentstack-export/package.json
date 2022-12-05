@@ -1,7 +1,7 @@
 {
   "name": "testsha-cm-export",
   "description": "Contentstack CLI plugin to export content from stack",
-  "version": "1.2.5",
+  "version": "1.2.8",
   "dependencies": {
     "testsha-command": "^1.0.2",
     "testsha-utilities": "^1.0.3",
