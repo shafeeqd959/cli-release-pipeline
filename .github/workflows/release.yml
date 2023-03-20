@@ -37,6 +37,8 @@ jobs:
       - uses: EndBug/add-and-commit@v9
         with:
           message: "Released version"
+      - name: echo content of the directory
+        run: echo ls
       - name: Create Release
         uses: actions/create-release@v1
         id: create_release
